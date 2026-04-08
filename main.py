@@ -29,38 +29,155 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS personalizado
+# CSS personalizado - Diseño profesional
 st.markdown("""
 <style>
+    /* Encabezado principal */
     .main-header {
-        font-size: 3rem;
-        font-weight: bold;
-        color: #1E88E5;
+        font-size: 3.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         text-align: center;
         margin-bottom: 2rem;
+        text-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        letter-spacing: -1px;
     }
+    
+    /* Subtítulo de secciones */
     .sub-header {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #333;
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #1E3A8A;
         margin-top: 2rem;
-        margin-bottom: 1rem;
-        border-bottom: 2px solid #1E88E5;
+        margin-bottom: 1.5rem;
+        border-bottom: 3px solid #3B82F6;
         padding-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
+    
+    /* Sidebar profesional */
+    .css-1d391kg {
+        background-color: #1E3A8A !important;
+        border-right: 1px solid #3B82F6;
+    }
+    
+    /* Títulos de sidebar */
+    .css-1oe59io {
+        color: white !important;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    /* Métricas con estilo profesional */
     .metric-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 10px;
-        border-left: 4px solid #1E88E5;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        border-left: 5px solid #3B82F6;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
     }
+    
+    .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Texto positivo y negativo */
     .positive {
-        color: #2E7D32;
-        font-weight: bold;
+        color: #166534 !important;
+        font-weight: 700;
+        font-size: 1.1rem;
     }
+    
     .negative {
-        color: #C62828;
-        font-weight: bold;
+        color: #991b1b !important;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    
+    /* Botones profesionales */
+    .stButton > button {
+        background-color: #3B82F6 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0.75rem 1.5rem !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3) !important;
+    }
+    
+    .stButton > button:hover {
+        background-color: #2563EB !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 15px -3px rgba(59, 130, 246, 0.5) !important;
+    }
+    
+    /* Tabs con estilo profesional */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 24px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        background-color: #f1f5f9;
+        border-radius: 8px 8px 0 0;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        color: #334155;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .stTabs [data-baseweb="tab"][aria-selected="true"] {
+        background-color: #3B82F6;
+        color: white;
+        border-bottom: 3px solid #1E3A8A;
+    }
+    
+    /* Contenedores de contenido */
+    .stContainer {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    /* DataFrames con estilo profesional */
+    .stDataFrame {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Gráficos con borde profesional */
+    .js-plotly-plot .plotly .plot-container {
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Texto de alerta profesional */
+    .stAlert {
+        border-radius: 8px;
+        border-left: 4px solid #3B82F6;
+        background-color: #eff6ff;
+        color: #1e40af;
+    }
+    
+    /* Footer discreto */
+    .footer {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-top: 3rem;
+        padding: 2rem;
+        border-top: 1px solid #e2e8f0;
     }
 </style>
 """, unsafe_allow_html=True)
