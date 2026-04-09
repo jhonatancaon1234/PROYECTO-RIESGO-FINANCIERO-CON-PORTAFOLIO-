@@ -1,313 +1,398 @@
-# 📊 Dashboard de Análisis de Riesgo Financiero con Portafolio
+# 📊 Dashboard de Riesgo Financiero - Backend FastAPI + Frontend Streamlit
 
 ## 🎯 Descripción del Proyecto
 
-Este proyecto implementa un dashboard interactivo para el análisis de riesgo financiero de un portafolio diversificado compuesto por 5 activos:
+Sistema integral de análisis de riesgo financiero con arquitectura Backend-Frontend, implementando modelos avanzados como CAPM, GARCH, Value at Risk (VaR), optimización de portafolio Markowitz, y señales de trading automatizadas. El proyecto combina rigor académico con arquitectura profesional lista para producción.
 
-- **Apple Inc. (AAPL)** - Tecnología
-- **Microsoft Corporation (MSFT)** - Tecnología  
-- **Exxon Mobil Corporation (XOM)** - Energía
-- **The Coca-Cola Company (KO)** - Consumo
-- **SPDR S&P 500 ETF Trust (SPY)** - Benchmark del mercado
+## 👥 Autores
 
-## 🧠 Justificación de la Selección de Activos
+- **Jhonatan Cañón** - [jhonatancaon1234](https://github.com/jhonatancaon1234)
+- **Nombre del Segundo Integrante** - [usuario](https://github.com/usuario)
 
-La selección de estos activos responde a una estrategia de **diversificación sectorial**:
+## 🏗️ Arquitectura del Sistema
 
-- **Tecnología**: Apple y Microsoft representan el sector tecnológico, caracterizado por alto crecimiento pero mayor volatilidad
-- **Energía**: Exxon Mobil proporciona exposición al sector energético, sensible a ciclos económicos y precios de commodities
-- **Consumo**: Coca-Cola ofrece estabilidad a través del consumo básico, considerado defensivo
-- **Benchmark**: SPY (S&P 500 ETF) sirve como referencia de mercado para comparar el performance del portafolio
+```
+┌─────────────────┐         ┌─────────────────┐
+│   Frontend      │  HTTP   │   Backend       │
+│   Streamlit     │◄───────►│   FastAPI       │
+│   (Puerto 8501) │         │   (Puerto 8000) │
+└─────────────────┘         └─────────────────┘
+                                      │
+                                      ▼
+                            ┌─────────────────┐
+                            │   Yahoo Finance │
+                            │   API           │
+                            └─────────────────┘
+```
 
-Esta combinación permite analizar diferentes perfiles de riesgo y correlaciones entre sectores.
-
-## 🏗️ Arquitectura del Proyecto
+### Estructura del Proyecto
 
 ```
 PROYECTO-RIESGO-FINANCIERO-CON-PORTAFOLIO-/
-├── README.md                    # Documentación del proyecto
-├── requirements.txt             # Dependencias Python
-├── main.py                      # Aplicación Streamlit principal
-├── config.py                    # Configuración y constantes
-├── data/                        # Módulos de datos
+├── backend/                    # Backend FastAPI
 │   ├── __init__.py
-│   ├── data_loader.py          # Carga de datos de Yahoo Finance
-│   └── data_processor.py       # Procesamiento de datos
-├── analysis/                    # Módulos de análisis financiero
+│   ├── main.py                # API principal (8 endpoints)
+│   ├── models.py              # Modelos Pydantic
+│   ├── config.py              # Configuración con BaseSettings
+│   ├── requirements.txt       # Dependencias backend
+│   └── services/              # Servicios de negocio
+│       ├── __init__.py
+│       ├── data_service.py    # Servicio de datos
+│       └── analysis_service.py # Servicio de análisis
+├── frontend/                   # Frontend Streamlit
 │   ├── __init__.py
-│   ├── technical_analysis.py   # Análisis técnico (RSI, MACD, medias)
-│   ├── returns_analysis.py     # Análisis de rendimientos
-│   ├── volatility_models.py    # Modelos ARCH/GARCH
-│   ├── capm_analysis.py        # Modelo CAPM
-│   ├── risk_metrics.py         # VaR y CVaR
-│   └── portfolio_optimization.py # Optimización Markowitz
-├── signals/                     # Sistema de señales de trading
+│   ├── app.py                 # Dashboard principal
+│   └── requirements.txt       # Dependencias frontend
+├── analysis/                   # Módulos de análisis (reutilizados)
 │   ├── __init__.py
-│   └── trading_signals.py      # Señales automáticas
-└── utils/                       # Utilidades
-    ├── __init__.py
-    └── plotting.py             # Funciones de visualización
+│   ├── technical_analysis.py
+│   ├── returns_analysis.py
+│   ├── volatility_models.py
+│   ├── capm_analysis.py
+│   ├── risk_metrics.py
+│   └── portfolio_optimization.py
+├── data/                       # Módulos de datos
+│   ├── __init__.py
+│   ├── data_loader.py
+│   └── data_processor.py
+├── signals/                    # Sistema de señales
+│   ├── __init__.py
+│   └── trading_signals.py
+├── utils/                      # Utilidades
+│   ├── __init__.py
+│   └── plotting.py
+├── docs/                       # Documentación
+│   └── informe_ejecutivo.md   # Informe ejecutivo
+├── .env.example               # Ejemplo de variables de entorno
+├── .gitignore                 # Configuración Git
+├── config.py                  # Configuración global
+├── requirements.txt           # Dependencias generales
+└── README.md                  # Este archivo
 ```
 
-## 🔧 Tecnologías Utilizadas
-
-### Principal
-- **Streamlit** - Dashboard interactivo web
-- **yfinance** - API de Yahoo Finance para datos en tiempo real
-
-### Análisis de Datos
-- **pandas** - Manipulación y análisis de datos
-- **numpy** - Cálculos numéricos
-- **scipy** - Estadísticas avanzadas
-
-### Visualización
-- **plotly** - Gráficos interactivos
-- **matplotlib/seaborn** - Gráficos estáticos
-
-### Modelos Financieros
-- **arch** - Modelos ARCH/GARCH para volatilidad
-- **statsmodels** - Regresiones y análisis estadístico
-- **scikit-learn** - Optimización y machine learning
-
-## 📈 Módulos de Análisis
-
-### 🔹 1. Análisis Técnico
-**Objetivo**: Entender tendencias y señales de compra/venta
-
-**Indicadores implementados**:
-- **Promedios Móviles**: SMA 20 y 50 para identificar tendencias
-- **RSI (Relative Strength Index)**: Identificar sobrecompra (>70) y sobreventa (<30)
-- **MACD**: Momentum y cruces de tendencia
-- **Bandas de Bollinger**: Volatilidad y niveles de soporte/resistencia
-
-**Interpretación**:
-- Cruces de medias: Señales de cambio de tendencia
-- RSI: Condiciones extremas de precio
-- MACD: Momentum del precio
-
-### 🔹 2. Análisis de Rendimientos
-**Objetivo**: Comprender el comportamiento estadístico de los retornos
-
-**Métricas calculadas**:
-- Media, desviación estándar, varianza
-- Asimetría (skewness) y curtosis (kurtosis)
-- Pruebas de normalidad (Jarque-Bera, Shapiro-Wilk)
-- Drawdown máximo y tiempo de recuperación
-
-**Hallazgos clave**:
-- Los rendimientos no siguen distribución normal (colas pesadas)
-- Presencia de asimetría y curtosis alta
-- Patrones de volatilidad clustering
-
-### 🔹 3. Modelos ARCH/GARCH
-**Objetivo**: Modelar la volatilidad condicional y heterocedástica
-
-**Modelos implementados**:
-- **ARCH(1)**: Modela efectos de choques pasados en volatilidad
-- **GARCH(1,1)**: Combina efectos de choques y volatilidad pasada
-- Comparación de modelos mediante AIC/BIC
-
-**Aplicaciones**:
-- Pronóstico de volatilidad futura
-- Mejor comprensión de patrones de riesgo
-- Input para cálculo de VaR avanzado
-
-### 🔹 4. CAPM (Capital Asset Pricing Model)
-**Objetivo**: Medir el riesgo sistemático y retorno esperado
-
-**Cálculos realizados**:
-- **Beta**: Sensibilidad de cada activo al mercado (SPY)
-- **Alpha**: Exceso de retorno no explicado por el mercado
-- **R²**: Proporción de varianza explicada por el mercado
-- **Ratio de Treynor**: Retorno ajustado por riesgo sistemático
-
-**Clasificación de riesgo**:
-- **Beta > 1.2**: Alto riesgo (cíclico)
-- **Beta 1.0-1.2**: Riesgo moderado
-- **Beta 0.8-1.0**: Riesgo bajo
-- **Beta < 0.8**: Defensivo
-
-### 🔹 5. VaR y CVaR
-**Objetivo**: Cuantificar la pérdida máxima esperada en escenarios extremos
-
-**Métodos implementados**:
-- **VaR Histórico**: Percentil del nivel de confianza
-- **VaR Paramétrico**: Asumiendo distribución normal
-- **VaR GARCH**: Incorporando volatilidad condicional
-- **CVaR (Expected Shortfall)**: Pérdida promedio en colas extremas
-
-**Interpretación**:
-- "Con 95% de confianza, la pérdida diaria no superará X%"
-- CVaR proporciona visión más conservadora del riesgo extremo
-
-### 🔹 6. Optimización Markowitz
-**Objetivo**: Encontrar portafolios óptimos según relación riesgo-retorno
-
-**Portafolios calculados**:
-- **Mínima Varianza**: Menor riesgo posible
-- **Máximo Sharpe**: Mejor retorno ajustado por riesgo
-- **Pesos Iguales**: Benchmark simple
-- **Paridad de Riesgo**: Igual contribución al riesgo
-
-**Métricas de diversificación**:
-- Índice de Herfindahl-Hirschman (HHI)
-- Número efectivo de activos
-- Concentración máxima
-
-### 🔹 7. Señales Automáticas ⭐
-**Objetivo**: Sistema de trading basado en indicadores técnicos
-
-**Señales generadas**:
-- **SMA**: Cruce de medias móviles (20/50)
-- **RSI**: Condiciones de sobrecompra/sobreventa
-- **MACD**: Cruce de línea MACD y señal
-- **Señal Combinada**: Integración de múltiples indicadores
-
-**Clasificación**:
-- **Fuerte Compra/Venta**: Score > 0.66
-- **Compra/Venta**: Score 0.33-0.66
-- **Mantener**: Score -0.33 a 0.33
-
-### 🔹 8. Contexto Macro y Benchmark ⭐
-**Objetivo**: Comparar performance del portafolio vs mercado
-
-**Métricas de comparación**:
-- **Retorno Total**: Performance absoluta
-- **Sharpe Ratio**: Retorno ajustado por riesgo total
-- **Sortino Ratio**: Retorno ajustado por riesgo a la baja
-- **Alpha**: Exceso de retorno vs benchmark
-- **Information Ratio**: Consistencia del alpha
-
-**Análisis de correlación**:
-- Relación con el mercado (beta)
-- Diversificación entre sectores
-- Ciclos económicos y sensibilidad sectorial
-
-## 🚀 Instalación y Ejecución
+## 🚀 Instalación
 
 ### Requisitos Previos
+
 - Python 3.8 o superior
-- Conexión a internet para descargar datos de Yahoo Finance
+- pip (gestor de paquetes de Python)
+- Git
 
-### Instalación de Dependencias
+### Paso 1: Clonar el Repositorio
+
 ```bash
+git clone https://github.com/jhonatancaon1234/PROYECTO-RIESGO-FINANCIERO-CON-PORTAFOLIO-.git
+cd PROYECTO-RIESGO-FINANCIERO-CON-PORTAFOLIO-
+```
+
+### Paso 2: Crear Entorno Virtual
+
+```bash
+# Crear entorno virtual
+python -m venv venv
+
+# Activar entorno virtual (Windows)
+venv\Scripts\activate
+
+# Activar entorno virtual (Mac/Linux)
+source venv/bin/activate
+```
+
+### Paso 3: Instalar Dependencias
+
+```bash
+# Instalar dependencias generales
 pip install -r requirements.txt
+
+# Instalar dependencias del backend
+pip install -r backend/requirements.txt
+
+# Instalar dependencias del frontend
+pip install -r frontend/requirements.txt
 ```
 
-### Ejecución del Dashboard
+### Paso 4: Configurar Variables de Entorno
+
 ```bash
-streamlit run main.py
+# Copiar archivo de ejemplo
+cp .env.example .env
+
+# Editar .env con tus valores (opcional)
+# Las configuraciones por defecto funcionan correctamente
 ```
 
-### Acceso al Dashboard
-El dashboard se abrirá automáticamente en tu navegador en `http://localhost:8501`
+## 🔧 Configuración de Variables de Entorno
 
-## 📊 Interfaz del Dashboard
+### Variables Requeridas (.env)
 
-### Configuración (Sidebar)
-- Selección de activos para análisis
-- Período de análisis (6 meses a 5 años)
-- Nivel de confianza para VaR (1%-10%)
+```env
+# Configuración de la aplicación
+APP_NAME="API de Riesgo Financiero"
+APP_VERSION="1.0.0"
+DEBUG=false
 
-### Pestañas de Análisis
-1. **🔍 Análisis Técnico**: Gráficos de precios e indicadores
-2. **📊 Rendimientos**: Distribuciones y correlaciones
-3. **📈 Volatilidad**: Modelos GARCH y volatilidad histórica
-4. **🎯 CAPM**: Betas y análisis de riesgo sistemático
-5. **⚠️ VaR & CVaR**: Métricas de riesgo extremo
-6. **⚖️ Markowitz**: Optimización de portafolios
-7. **🎯 Señales**: Sistema de trading automático
-8. **🏆 Benchmark**: Comparación con mercado
+# Configuración de datos financieros
+DEFAULT_START_DATE="2024-01-01"
+DEFAULT_END_DATE="2026-04-08"
+DEFAULT_CONFIDENCE_LEVEL=0.05
+RISK_FREE_RATE=0.02
 
-## 🎓 Interpretación Económica
+# Parámetros técnicos
+SMA_SHORT_WINDOW=20
+SMA_LONG_WINDOW=50
+RSI_WINDOW=14
+GARCH_P=1
+GARCH_Q=1
 
-### Diversificación
-La combinación de sectores diferentes reduce el riesgo no sistemático:
-- **Tecnología**: Alto crecimiento, alta volatilidad
-- **Energía**: Cíclico, correlación con commodities
-- **Consumo**: Defensivo, menor volatilidad
-- **Benchmark**: Referencia de mercado
+# CORS (permitir frontend)
+ALLOWED_ORIGINS=http://localhost:8501,http://localhost:8502
+```
 
-### Riesgo Sistemico vs Específico
-- **Sistemico**: No diversificable, medido por beta
-- **Específico**: Diversificable mediante portafolio
-- **Optimización**: Busca equilibrio entre ambos
+### API Keys (Opcional)
 
-### Gestión de Riesgo
-- **VaR**: Límite de pérdida esperada
-- **CVaR**: Gestión de colas extremas
-- **Diversificación**: Reducción de riesgo no sistemático
+El proyecto utiliza Yahoo Finance de forma gratuita. Si deseas usar servicios premium:
 
-## 📈 Aplicaciones Prácticas
+```env
+# Alpha Vantage (opcional)
+ALPHA_VANTAGE_API_KEY=tu_api_key
 
-### Para Inversionistas
-- **Selección de activos**: Basado en perfil de riesgo
-- **Timing de mercado**: Señales técnicas de entrada/salida
-- **Gestión de riesgo**: Límites de VaR y diversificación
+# Yahoo Finance Premium (opcional)
+YAHOO_FINANCE_API_KEY=tu_api_key
+```
 
-### Para Gestores de Portafolios
-- **Optimización**: Portafolios eficientes según Markowitz
-- **Benchmarking**: Comparación vs mercado
-- **Reportes de riesgo**: Métricas regulatorias y de gestión
+## 🎮 Ejecución del Proyecto
 
-### Para Analistas Financieros
-- **Modelos de volatilidad**: Pronósticos GARCH
-- **Valuación**: CAPM para costos de capital
-- **Backtesting**: Validación de estrategias
+### 1. Iniciar el Backend FastAPI
 
-## 🔬 Metodología
+```bash
+# Desde la raíz del proyecto
+uvicorn backend.main:app --reload --port 8000
+```
 
-### Fuentes de Datos
-- **Yahoo Finance**: Precios diarios de cierre ajustado
-- **Frecuencia**: Diaria (días hábiles)
-- **Horizonte**: Configurable por el usuario
+**Verificación:**
+- API disponible en: `http://localhost:8000`
+- Documentación Swagger: `http://localhost:8000/docs`
+- Health check: `http://localhost:8000/health`
 
-### Supuestos del Modelo
-- **Mercados eficientes**: Precios reflejan toda información disponible
-- **Normalidad condicional**: Para algunos cálculos paramétricos
-- **Estacionariedad**: Series temporales estacionarias en media y varianza
+### 2. Iniciar el Frontend Streamlit (en otra terminal)
 
-### Limitaciones
-- **Datos históricos**: No garantizan performance futura
-- **Supuestos de normalidad**: Rendimientos financieros suelen tener colas pesadas
-- **Costos de transacción**: No incluidos en el análisis
-- **Impuestos**: No considerados en cálculos de retorno
+```bash
+# Asegúrate de que el backend esté corriendo
+streamlit run frontend/app.py --server.port 8501
+```
 
-## 📚 Referencias y Bibliografía
+**Verificación:**
+- Dashboard disponible en: `http://localhost:8501`
 
-### Modelos Financieros
-- Markowitz, H. (1952). "Portfolio Selection"
-- Sharpe, W. (1964). "Capital Asset Prices"
-- Engle, R. (1982). "Autoregressive Conditional Heteroscedasticity"
-- Bollerslev, T. (1986). "Generalized Autoregressive Conditional Heteroskedasticity"
+### 3. Acceder al Dashboard
 
-### Risk Management
-- Jorion, P. (2006). "Value at Risk"
-- McNeil, A.J., Frey, R., Embrechts, P. (2015). "Quantitative Risk Management"
+1. Abre tu navegador en `http://localhost:8501`
+2. Haz clic en "🔄 Cargar Datos" en el sidebar
+3. Explora las 8 pestañas del dashboard
 
-### Technical Analysis
-- Murphy, J.J. (1999). "Technical Analysis of the Financial Markets"
-- Pring, M.J. (2002). "Technical Analysis Explained"
+## 📡 Documentación de Endpoints (API)
 
-## 🤝 Contribución
+### Endpoints Principales
 
-Este proyecto está diseñado para ser educativo y de código abierto. Se agradecen contribuciones que mejoren:
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `GET` | `/` | Información de la API |
+| `POST` | `/data` | Obtener datos financieros |
+| `POST` | `/technical-analysis` | Análisis técnico (RSI, SMA) |
+| `POST` | `/risk-metrics` | Métricas de riesgo (VaR, CVaR) |
+| `POST` | `/portfolio-optimize` | Optimización Markowitz |
+| `POST` | `/capm` | Análisis CAPM |
+| `POST` | `/volatility` | Modelos GARCH |
+| `POST` | `/trading-signals` | Señales de trading |
+| `POST` | `/benchmark` | Comparación con benchmark |
 
-- Nuevos indicadores técnicos
-- Modelos de riesgo avanzados
-- Mejoras en la interfaz de usuario
-- Documentación y ejemplos
+### Ejemplo de Uso de API
+
+```bash
+# Obtener datos financieros
+curl -X POST "http://localhost:8000/data" \
+  -H "Content-Type: application/json" \
+  -d '{"assets": ["AAPL", "MSFT", "SPY"]}'
+
+# Análisis técnico
+curl -X POST "http://localhost:8000/technical-analysis" \
+  -H "Content-Type: application/json" \
+  -d '{"symbol": "AAPL", "window_sma_short": 20, "window_sma_long": 50}'
+```
+
+### Documentación Automática
+
+La API incluye documentación interactiva Swagger UI:
+- **Swagger UI**: `http://localhost:8000/docs`
+- **ReDoc**: `http://localhost:8000/redoc`
+- **OpenAPI JSON**: `http://localhost:8000/openapi.json`
+
+## 📊 Activos Seleccionados
+
+### Portafolio Base
+
+| Símbolo | Empresa | Sector | Justificación |
+|---------|---------|--------|---------------|
+| **AAPL** | Apple Inc. | Tecnología | Líder en innovación, alta capitalización |
+| **MSFT** | Microsoft Corporation | Tecnología | Software y cloud computing, estabilidad |
+| **XOM** | Exxon Mobil Corporation | Energía | Diversificación sectorial, energía tradicional |
+| **KO** | The Coca-Cola Company | Consumo | Bienes de consumo básico, defensivo |
+| **SPY** | SPDR S&P 500 ETF Trust | Índice | Benchmark de mercado, referencia |
+
+### Criterios de Selección
+
+1. **Diversificación Sectorial**: Tecnología, Energía, Consumo
+2. **Liquidez**: Todos los activos tienen alto volumen diario
+3. **Representatividad**: Empresas líderes en sus sectores
+4. **Disponibilidad de Datos**: Información histórica completa
+
+## 🛠️ Características Técnicas
+
+### Backend FastAPI
+
+- ✅ **Pydantic Models**: Validación de datos con Field() y @field_validator
+- ✅ **Dependency Injection**: Uso de Depends() para servicios
+- ✅ **BaseSettings**: Configuración con variables de entorno
+- ✅ **CORS**: Configuración para frontend Streamlit
+- ✅ **Documentación Automática**: Swagger UI y ReDoc
+- ✅ **Manejo de Errores**: Excepciones globales y validación
+- ✅ **Caching**: Sistema de caché para optimización
+
+### Frontend Streamlit
+
+- ✅ **Arquitectura Cliente-Servidor**: Consume API REST
+- ✅ **8 Módulos Temáticos**: Análisis técnico, rendimientos, volatilidad, CAPM, VaR, Markowitz, señales, benchmark
+- ✅ **Visualización Interactiva**: Plotly con gráficos dinámicos
+- ✅ **Diseño Profesional**: CSS personalizado con gradientes
+- ✅ **Responsive**: Adaptable a diferentes tamaños de pantalla
+- ✅ **Navegación Intuitiva**: Tabs y sidebar organizados
+
+### Modelos Financieros Implementados
+
+1. **Análisis Técnico**: RSI, SMA, Bandas de Bollinger
+2. **Rendimientos**: Estadísticas descriptivas, distribuciones
+3. **Volatilidad**: Modelos GARCH(1,1), volatilidad histórica
+4. **CAPM**: Alpha, Beta, R-cuadrado
+5. **VaR/CVaR**: Value at Risk histórico y condicional
+6. **Markowitz**: Optimización de portafolio, frontera eficiente
+7. **Señales**: Sistema combinado SMA-RSI
+8. **Benchmark**: Alpha, tracking error, information ratio
+
+## 📋 Uso de Herramientas de IA
+
+Este proyecto fue desarrollado con asistencia de herramientas de IA para:
+
+- **Generación de código**: Estructura base y funciones auxiliares
+- **Documentación**: Redacción de comentarios y documentación
+- **Optimización**: Sugerencias de mejora de rendimiento
+- **Testing**: Generación de casos de prueba
+
+**Nota**: Todo el código fue revisado, validado y adaptado manualmente para cumplir con los requisitos académicos y profesionales del proyecto.
+
+## 🧪 Pruebas y Validación
+
+### Verificación de Instalación
+
+```bash
+# Verificar versiones de Python
+python --version  # Debe ser 3.8+
+
+# Verificar paquetes instalados
+pip list | grep -E "(fastapi|streamlit|pandas|numpy)"
+
+# Verificar conexión a Yahoo Finance
+python -c "import yfinance as yf; print(yf.download('AAPL', period='1d'))"
+```
+
+### Pruebas del Backend
+
+```bash
+# Prueba de health check
+curl http://localhost:8000/health
+
+# Prueba de endpoint de datos
+curl -X POST "http://localhost:8000/data" \
+  -H "Content-Type: application/json" \
+  -d '{"assets": ["AAPL"]}'
+```
+
+### Pruebas del Frontend
+
+1. Verificar que el backend esté corriendo
+2. Acceder a `http://localhost:8501`
+3. Hacer clic en "Cargar Datos"
+4. Verificar que se muestren gráficos y métricas
+
+## 🐛 Solución de Problemas
+
+### Error: "No module named 'backend'"
+
+```bash
+# Asegúrate de estar en la raíz del proyecto
+pwd  # Debe mostrar: .../PROYECTO-RIESGO-FINANCIERO-CON-PORTAFOLIO-
+
+# Reinstalar paquetes
+pip install -r backend/requirements.txt
+```
+
+### Error: "Connection refused" en frontend
+
+```bash
+# Verificar que el backend esté corriendo
+curl http://localhost:8000/health
+
+# Si no responde, iniciar backend
+uvicorn backend.main:app --reload --port 8000
+```
+
+### Error: "Port already in use"
+
+```bash
+# Cambiar puerto del backend
+uvicorn backend.main:app --reload --port 8001
+
+# Actualizar frontend/app.py
+API_BASE_URL = "http://localhost:8001"
+```
+
+### Error: "Yahoo Finance API rate limit"
+
+- Esperar 1-2 minutos entre solicitudes
+- Reducir número de activos en análisis
+- Usar datos cacheados (ya implementado)
 
 ## 📄 Licencia
 
-Este proyecto es de uso educativo y académico. Se permite su uso, modificación y distribución con fines de aprendizaje.
+Este proyecto es de uso académico y personal. Los datos financieros son proporcionados por Yahoo Finance bajo sus términos de servicio.
 
-## 🙏 Agradecimientos
+## 🤝 Contribuciones
 
-- **Yahoo Finance**: Por proporcionar datos financieros gratuitos
-- **Comunidad Python**: Por desarrollar las excelentes librerías utilizadas
-- **Academia financiera**: Por el desarrollo de las teorías y modelos implementados
+Este es un proyecto universitario. Para contribuciones o preguntas:
+
+1. Crear un issue en GitHub
+2. Contactar a los autores por email
+
+## 📚 Referencias
+
+### Bibliografía
+
+1. **Hull, J. C. (2018)**: "Risk Management and Financial Institutions"
+2. **Tsay, R. S. (2005)**: "Analysis of Financial Time Series"
+3. **Markowitz, H. (1952)**: "Portfolio Selection" - Journal of Finance
+4. **Sharpe, W. F. (1964)**: "Capital Asset Prices: A Theory of Market Equilibrium"
+
+### Recursos en Línea
+
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [Streamlit Documentation](https://docs.streamlit.io/)
+- [Yahoo Finance API](https://pypi.org/project/yfinance/)
+- [Plotly Documentation](https://plotly.com/python/)
+
+## 🎓 Notas Académicas
+
+Este proyecto fue desarrollado para la materia de **Análisis de Riesgo Financiero** de la Universidad Santo Tomás, demostrando la aplicación práctica de modelos financieros avanzados con arquitectura de software profesional.
 
 ---
 
-**Nota**: Este proyecto tiene como objetivo principal la educación y comprensión de conceptos de análisis de riesgo financiero. No constituye asesoría de inversión y las decisiones financieras deben basarse en análisis más completos y profesionales.
+**Fecha de última actualización**: Abril 2026
+**Versión del proyecto**: 2.0.0
