@@ -51,7 +51,25 @@ class DataService:
                 raise ValueError("No se pudieron descargar datos para los activos especificados")
             
             # Procesar datos
-            prices = pd.DataFrame({symbol: data[symbol]['Close'] for symbol in data.keys()})
+            prices_dict = {}
+            dates = None
+            
+            for symbol in data.keys():
+                if not data[symbol].empty:
+                    prices_dict[symbol] = data[symbol]['Close'].values
+                    # Obtener fechas del primer símbolo
+                    if dates is None:
+                        if hasattr(data[symbol].index, 'to_pydatetime'):
+                            dates = data[symbol].index.to_pydatetime()
+                        else:
+                            dates = data[symbol].index.values
+            
+            # Crear DataFrame con índice de fechas
+            if dates is not None:
+                prices = pd.DataFrame(prices_dict, index=pd.to_datetime(dates))
+            else:
+                prices = pd.DataFrame(prices_dict)
+            
             returns = prices.pct_change().dropna()
             
             # Calcular estadísticas básicas
