@@ -56,7 +56,18 @@ class DataService:
             
             for symbol in data.keys():
                 if not data[symbol].empty:
-                    prices_dict[symbol] = data[symbol]['Close'].values
+                    # Extraer precios de cierre correctamente
+                    close_prices = data[symbol]['Close']
+                    
+                    # Si es un DataFrame con múltiples columnas, tomar la primera
+                    if hasattr(close_prices, 'iloc'):
+                        # Si es DataFrame, convertir a Series
+                        if isinstance(close_prices, pd.DataFrame):
+                            close_prices = close_prices.iloc[:, 0]
+                        prices_dict[symbol] = close_prices.values.flatten()
+                    else:
+                        prices_dict[symbol] = close_prices.values.flatten()
+                    
                     # Obtener fechas del primer símbolo
                     if dates is None:
                         if hasattr(data[symbol].index, 'to_pydatetime'):
