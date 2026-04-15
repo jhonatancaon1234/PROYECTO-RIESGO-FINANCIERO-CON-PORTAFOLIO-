@@ -380,12 +380,20 @@ async def benchmark_comparison(
         data = data_service.get_financial_data(assets=all_assets)
         returns = data['returns']
         
+        # Verificar que el benchmark esté en los retornos
+        if request.benchmark_symbol not in returns.columns:
+            return ApiResponse(
+                success=False,
+                message=f"El benchmark {request.benchmark_symbol} no está en los datos",
+                data={}
+            )
+        
         # Comparar con benchmark
         benchmark_returns = returns[request.benchmark_symbol]
         comparison_results = {}
         
         for symbol in request.assets:
-            if symbol != request.benchmark_symbol:
+            if symbol != request.benchmark_symbol and symbol in returns.columns:
                 asset_returns = returns[symbol]
                 comparison = analysis_service.compare_with_benchmark(
                     returns=asset_returns,
@@ -399,9 +407,11 @@ async def benchmark_comparison(
             data=comparison_results
         )
     except Exception as e:
+        # Imprimir error en consola para debugging
+        print(f"Error en benchmark: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error interno: {str(e)}"
         )
 
 

@@ -53,9 +53,32 @@ class DataService:
             for symbol in assets:
                 try:
                     # Intentar descargar datos
-                    ticker = yf.download(symbol, start=start_date, end=end_date)
+                    print(f"Descargando {symbol} desde {start_date} hasta {end_date}...")
+                    ticker = yf.download(symbol, start=start_date, end=end_date, progress=False)
                     
-                    if not ticker.empty and not ticker['Close'].isna().all():
+                    # Debug: mostrar información del ticker
+                    print(f"Ticker shape: {ticker.shape}, columns: {ticker.columns.tolist() if hasattr(ticker, 'columns') else 'N/A'}")
+                    
+                    # Verificar si hay datos válidos
+                    has_data = False
+                    if not ticker.empty:
+                        # Las nuevas versiones de yfinance tienen estructura MultiIndex
+                        if isinstance(ticker.columns, pd.MultiIndex):
+                            # Para estructura MultiIndex, acceder correctamente
+                            if ('Close', symbol) in ticker.columns:
+                                close_data = ticker[('Close', symbol)]
+                                if not close_data.isna().all():
+                                    has_data = True
+                            elif 'Close' in ticker.columns:
+                                close_data = ticker['Close']
+                                if not close_data.isna().all():
+                                    has_data = True
+                        else:
+                            # Para estructura normal
+                            if 'Close' in ticker.columns and not ticker['Close'].isna().all():
+                                has_data = True
+                    
+                    if has_data:
                         data[symbol] = ticker
                         valid_assets.append(symbol)
                         print(f"✅ Datos descargados exitosamente para {symbol}")
@@ -77,14 +100,31 @@ class DataService:
                 try:
                     if not data[symbol].empty:
                         # Extraer precios de cierre correctamente
-                        close_prices = data[symbol]['Close']
+                        ticker_df = data[symbol]
+                        
+                        # Manejar estructura MultiIndex de yfinance
+                        if isinstance(ticker_df.columns, pd.MultiIndex):
+                            # Para estructura MultiIndex
+                            if ('Close', symbol) in ticker_df.columns:
+                                close_prices = ticker_df[('Close', symbol)]
+                            elif 'Close' in ticker_df.columns:
+                                close_prices = ticker_df['Close']
+                                # Si es MultiIndex de nivel único, tomar el primer elemento
+                                if isinstance(close_prices, pd.DataFrame):
+                                    close_prices = close_prices.iloc[:, 0]
+                            else:
+                                print(f"⚠️  No se encontró columna Close para {symbol}")
+                                continue
+                        else:
+                            # Para estructura normal
+                            close_prices = ticker_df['Close']
                         
                         # Validar que los precios no estén todos vacíos
                         if close_prices.isna().all():
                             print(f"⚠️  Precios vacíos para {symbol}, omitiendo...")
                             continue
                             
-                        # Si es un DataFrame con múltiples columnas, tomar la primera
+                        # Convertir a array numpy
                         if hasattr(close_prices, 'iloc'):
                             # Si es DataFrame, convertir a Series
                             if isinstance(close_prices, pd.DataFrame):
