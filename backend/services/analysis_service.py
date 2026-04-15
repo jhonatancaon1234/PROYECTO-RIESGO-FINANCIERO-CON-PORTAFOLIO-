@@ -298,7 +298,7 @@ class AnalysisService:
                 'beta': float(beta),
                 'tracking_error': float(tracking_error),
                 'information_ratio': float(info_ratio),
-                'outperformance': outperformance
+                'outperformance': bool(outperformance)
             }
             
         except Exception as e:
