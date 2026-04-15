@@ -24,7 +24,7 @@ st.set_page_config(
 # Configuración de API
 API_BASE_URL = "http://localhost:8000"
 
-# CSS personalizado - Diseño profesional con colores de acciones
+# CSS personalizado - Diseño profesional claro y moderno
 st.markdown("""
 <style>
     /* Colores representativos de las acciones */
@@ -34,31 +34,37 @@ st.markdown("""
         --exxon-color: #FF6B00;
         --cocacola-color: #F40009;
         --spy-color: #2E7D32;
-        --executive-blue: #1E3A8A;
-        --executive-dark: #0F172A;
-        --executive-gray: #64748B;
+        --primary-blue: #3B82F6;
+        --primary-green: #10B981;
+        --primary-orange: #F59E0B;
+        --primary-red: #EF4444;
+        --bg-light: #F8FAFC;
+        --bg-white: #FFFFFF;
+        --text-dark: #1E293B;
+        --text-gray: #64748B;
+        --border-color: #E2E8F0;
     }
     
-    /* Encabezado principal - Estilo Ejecutivo */
+    /* Encabezado principal - Estilo Moderno */
     .main-header {
         font-size: 3.5rem;
         font-weight: 800;
-        background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #0F172A 100%);
+        background: linear-gradient(135deg, #1E293B 0%, #334155 50%, #1E293B 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-align: center;
         margin-bottom: 2rem;
-        text-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        text-shadow: 0 4px 8px rgba(0,0,0,0.1);
         letter-spacing: -1px;
-        border-bottom: 4px solid #1E3A8A;
+        border-bottom: 4px solid #3B82F6;
         padding-bottom: 1rem;
     }
     
-    /* Subtítulo de secciones - Estilo Técnico */
+    /* Subtítulo de secciones - Estilo Profesional */
     .sub-header {
         font-size: 2rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+        background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-top: 2rem;
@@ -70,16 +76,16 @@ st.markdown("""
         text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
-    /* Sidebar profesional - Estilo Ejecutivo */
+    /* Sidebar profesional - Estilo Claro */
     .css-1d391kg {
-        background: linear-gradient(180deg, #0F172A 0%, #1E3A8A 100%) !important;
-        border-right: 2px solid #3B82F6;
-        box-shadow: 4px 0 15px rgba(0,0,0,0.3);
+        background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%) !important;
+        border-right: 2px solid #E2E8F0;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.1);
     }
     
     /* Títulos de sidebar */
     .css-1oe59io {
-        color: #E2E8F0 !important;
+        color: #1E293B !important;
         font-weight: 700;
         font-size: 1.2rem;
         text-transform: uppercase;
@@ -88,38 +94,39 @@ st.markdown("""
     
     /* Métricas con estilo profesional */
     .metric-card {
-        background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
+        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
         padding: 1.5rem;
         border-radius: 12px;
         border-left: 5px solid #3B82F6;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         transition: all 0.3s ease;
-        color: white;
+        color: #1E293B;
+        border: 1px solid #E2E8F0;
     }
     
     .metric-card:hover {
         transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     }
     
     /* Texto positivo y negativo */
     .positive {
-        color: #2E7D32 !important;
+        color: #10B981 !important;
         font-weight: 800;
         font-size: 1.2rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .negative {
-        color: #DC2626 !important;
+        color: #EF4444 !important;
         font-weight: 800;
         font-size: 1.2rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     /* Botones profesionales */
     .stButton > button {
-        background: linear-gradient(135deg, #3B82F6 0%, #1E3A8A 100%) !important;
+        background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%) !important;
         color: white !important;
         border: none !important;
         border-radius: 10px !important;
@@ -133,7 +140,7 @@ st.markdown("""
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #2563EB 0%, #0F172A 100%) !important;
+        background: linear-gradient(135deg, #2563EB 0%, #059669 100%) !important;
         transform: translateY(-3px) !important;
         box-shadow: 0 10px 25px rgba(59, 130, 246, 0.6) !important;
         border-color: #3B82F6;
@@ -142,30 +149,31 @@ st.markdown("""
     /* Tabs con estilo profesional */
     .stTabs [data-baseweb="tab-list"] {
         gap: 24px;
-        background: linear-gradient(180deg, #0F172A 0%, #1E3A8A 100%);
+        background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
         padding: 1rem;
         border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+        background: linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 100%);
         border-radius: 10px 10px 0 0;
         padding: 1.2rem 2.5rem;
         font-weight: 700;
-        color: white;
+        color: #1E293B;
         border-bottom: 3px solid transparent;
         transition: all 0.3s ease;
         text-transform: uppercase;
         letter-spacing: 1px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        border: 1px solid #E2E8F0;
     }
     
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
-        background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
-        color: white;
+        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+        color: #1E293B;
         border-bottom: 3px solid #3B82F6;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
     
     /* Contenedores de contenido */
@@ -198,7 +206,7 @@ st.markdown("""
         border-radius: 12px;
         border-left: 5px solid #3B82F6;
         background: linear-gradient(135deg, #EFF6FF 0%, #E0F2FE 100%);
-        color: #0F172A;
+        color: #1E293B;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     
@@ -619,21 +627,25 @@ if st.session_state.data_loaded:
                     vol_data = vol_response["data"]
                     
                     fig_vol = go.Figure()
+                    # Calcular volatilidad histórica móvil (30 días)
+                    rolling_vol = returns[selected_vol_asset].rolling(window=30).std() * np.sqrt(252)
+                    
+                    fig_vol = go.Figure()
                     fig_vol.add_trace(go.Scatter(
                         x=prices.index,
-                        y=[vol_data["historical_volatility"]] * len(prices),
+                        y=rolling_vol,
                         mode='lines',
-                        name='Volatilidad Histórica',
+                        name='Volatilidad Histórica (30 días)',
                         line=dict(color='#2E86AB', width=2)
                     ))
                     
-                    fig_vol.add_trace(go.Scatter(
-                        x=prices.index,
-                        y=[vol_data["garch_volatility"]] * len(prices),
-                        mode='lines',
-                        name='Volatilidad GARCH',
-                        line=dict(color='#FF6B6B', width=2)
-                    ))
+                    # Línea de volatilidad GARCH
+                    fig_vol.add_hline(
+                        y=vol_data["garch_volatility"],
+                        line_dash="dash",
+                        line_color="#FF6B6B",
+                        annotation_text=f"GARCH: {vol_data['garch_volatility']:.4f}"
+                    )
                     
                     fig_vol.update_layout(
                         title=f'Volatilidad Histórica - {selected_vol_asset}',
@@ -868,13 +880,14 @@ if st.session_state.data_loaded:
                 # Señal actual
                 signal_type = signal_info['signal_type']
                 price = signal_info['price']
+                confidence = signal_info.get('confidence', 0)
                 
                 if signal_type == 'BUY':
                     fig_signals.add_trace(go.Scatter(
                         x=[prices.index[-1]],
                         y=[price],
                         mode='markers',
-                        name='Señal de Compra',
+                        name=f'Señal de Compra (Confianza: {confidence:.2f})',
                         marker=dict(color='green', symbol='triangle-up', size=15)
                     ))
                 elif signal_type == 'SELL':
@@ -882,9 +895,12 @@ if st.session_state.data_loaded:
                         x=[prices.index[-1]],
                         y=[price],
                         mode='markers',
-                        name='Señal de Venta',
+                        name=f'Señal de Venta (Confianza: {confidence:.2f})',
                         marker=dict(color='red', symbol='triangle-down', size=15)
                     ))
+                else:
+                    # Para señales HOLD, no mostrar marcador
+                    pass
                 
                 fig_signals.update_layout(
                     title=f'Señales de Trading - {selected_signal_asset}',

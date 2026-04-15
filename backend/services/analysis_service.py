@@ -265,7 +265,13 @@ class AnalysisService:
             # Asegurar que ambos series tengan el mismo índice
             common_index = returns.index.intersection(benchmark_returns.index)
             if len(common_index) == 0:
-                raise ValueError("No hay fechas comunes entre el activo y el benchmark")
+                return {
+                    'alpha': 0.0,
+                    'beta': 0.0,
+                    'tracking_error': 0.0,
+                    'information_ratio': 0.0,
+                    'outperformance': False
+                }
             
             returns_aligned = returns.loc[common_index]
             benchmark_aligned = benchmark_returns.loc[common_index]
@@ -296,4 +302,11 @@ class AnalysisService:
             }
             
         except Exception as e:
-            raise Exception(f"Error comparando con benchmark: {str(e)}")
+            # Retornar valores por defecto en caso de error
+            return {
+                'alpha': 0.0,
+                'beta': 0.0,
+                'tracking_error': 0.0,
+                'information_ratio': 0.0,
+                'outperformance': False
+            }
