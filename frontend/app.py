@@ -24,155 +24,227 @@ st.set_page_config(
 # Configuración de API
 API_BASE_URL = "http://localhost:8000"
 
-# CSS personalizado - Diseño profesional
+# CSS personalizado - Diseño profesional con colores de acciones
 st.markdown("""
 <style>
-    /* Encabezado principal */
+    /* Colores representativos de las acciones */
+    :root {
+        --apple-color: #007AFF;
+        --microsoft-color: #00A4EF;
+        --exxon-color: #FF6B00;
+        --cocacola-color: #F40009;
+        --spy-color: #2E7D32;
+        --executive-blue: #1E3A8A;
+        --executive-dark: #0F172A;
+        --executive-gray: #64748B;
+    }
+    
+    /* Encabezado principal - Estilo Ejecutivo */
     .main-header {
         font-size: 3.5rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+        font-weight: 800;
+        background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #0F172A 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-align: center;
         margin-bottom: 2rem;
-        text-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        text-shadow: 0 6px 12px rgba(0,0,0,0.2);
         letter-spacing: -1px;
+        border-bottom: 4px solid #1E3A8A;
+        padding-bottom: 1rem;
     }
     
-    /* Subtítulo de secciones */
+    /* Subtítulo de secciones - Estilo Técnico */
     .sub-header {
-        font-size: 1.8rem;
-        font-weight: 600;
-        color: #1E3A8A;
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         margin-top: 2rem;
         margin-bottom: 1.5rem;
         border-bottom: 3px solid #3B82F6;
         padding-bottom: 0.5rem;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
-    /* Sidebar profesional */
+    /* Sidebar profesional - Estilo Ejecutivo */
     .css-1d391kg {
-        background-color: #1E3A8A !important;
-        border-right: 1px solid #3B82F6;
+        background: linear-gradient(180deg, #0F172A 0%, #1E3A8A 100%) !important;
+        border-right: 2px solid #3B82F6;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.3);
     }
     
     /* Títulos de sidebar */
     .css-1oe59io {
-        color: white !important;
-        font-weight: 600;
-        font-size: 1.1rem;
+        color: #E2E8F0 !important;
+        font-weight: 700;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     
     /* Métricas con estilo profesional */
     .metric-card {
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
         padding: 1.5rem;
         border-radius: 12px;
         border-left: 5px solid #3B82F6;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        color: white;
     }
     
     .metric-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.15);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.4);
     }
     
     /* Texto positivo y negativo */
     .positive {
-        color: #166534 !important;
-        font-weight: 700;
-        font-size: 1.1rem;
+        color: #2E7D32 !important;
+        font-weight: 800;
+        font-size: 1.2rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     
     .negative {
-        color: #991b1b !important;
-        font-weight: 700;
-        font-size: 1.1rem;
+        color: #DC2626 !important;
+        font-weight: 800;
+        font-size: 1.2rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     
     /* Botones profesionales */
     .stButton > button {
-        background-color: #3B82F6 !important;
+        background: linear-gradient(135deg, #3B82F6 0%, #1E3A8A 100%) !important;
         color: white !important;
         border: none !important;
-        border-radius: 8px !important;
-        padding: 0.75rem 1.5rem !important;
-        font-weight: 600 !important;
+        border-radius: 10px !important;
+        padding: 1rem 2rem !important;
+        font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
+        letter-spacing: 1px !important;
         transition: all 0.3s ease !important;
-        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3) !important;
+        box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4) !important;
+        border: 2px solid transparent;
     }
     
     .stButton > button:hover {
-        background-color: #2563EB !important;
-        transform: translateY(-2px) !important;
-        box-shadow: 0 8px 15px -3px rgba(59, 130, 246, 0.5) !important;
+        background: linear-gradient(135deg, #2563EB 0%, #0F172A 100%) !important;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.6) !important;
+        border-color: #3B82F6;
     }
     
     /* Tabs con estilo profesional */
     .stTabs [data-baseweb="tab-list"] {
         gap: 24px;
+        background: linear-gradient(180deg, #0F172A 0%, #1E3A8A 100%);
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     
     .stTabs [data-baseweb="tab"] {
-        background-color: #f1f5f9;
-        border-radius: 8px 8px 0 0;
-        padding: 1rem 2rem;
-        font-weight: 600;
-        color: #334155;
+        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+        border-radius: 10px 10px 0 0;
+        padding: 1.2rem 2.5rem;
+        font-weight: 700;
+        color: white;
         border-bottom: 3px solid transparent;
         transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
-        background-color: #3B82F6;
+        background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
         color: white;
-        border-bottom: 3px solid #1E3A8A;
+        border-bottom: 3px solid #3B82F6;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
     
     /* Contenedores de contenido */
     .stContainer {
-        background-color: white;
-        border-radius: 12px;
-        padding: 2rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         margin-bottom: 2rem;
+        border: 1px solid #E2E8F0;
     }
     
     /* DataFrames con estilo profesional */
     .stDataFrame {
-        border-radius: 8px;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #E2E8F0;
     }
     
     /* Gráficos con borde profesional */
     .js-plotly-plot .plotly .plot-container {
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #E2E8F0;
     }
     
     /* Texto de alerta profesional */
     .stAlert {
-        border-radius: 8px;
-        border-left: 4px solid #3B82F6;
-        background-color: #eff6ff;
-        color: #1e40af;
+        border-radius: 12px;
+        border-left: 5px solid #3B82F6;
+        background: linear-gradient(135deg, #EFF6FF 0%, #E0F2FE 100%);
+        color: #0F172A;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     
     /* Footer discreto */
     .footer {
         text-align: center;
-        color: #64748b;
+        color: #64748B;
         font-size: 0.9rem;
         margin-top: 3rem;
         padding: 2rem;
-        border-top: 1px solid #e2e8f0;
+        border-top: 2px solid #E2E8F0;
+        background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+    }
+    
+    /* Estilos específicos para cada acción */
+    .apple-metric { color: var(--apple-color); font-weight: 800; }
+    .microsoft-metric { color: var(--microsoft-color); font-weight: 800; }
+    .exxon-metric { color: var(--exxon-color); font-weight: 800; }
+    .cocacola-metric { color: var(--cocacola-color); font-weight: 800; }
+    .spy-metric { color: var(--spy-color); font-weight: 800; }
+    
+    /* Animaciones de carga */
+    .loading-spinner {
+        animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    
+    /* Estilo de cards de análisis */
+    .analysis-card {
+        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border: 1px solid #E2E8F0;
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+    }
+    
+    .analysis-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -327,6 +399,8 @@ if st.session_state.data_loaded:
     with tab1:
         st.markdown('<div class="sub-header">🔍 Análisis Técnico</div>', unsafe_allow_html=True)
         
+        st.info("📖 **Interpretación:** El análisis técnico estudia el comportamiento histórico de precios para predecir movimientos futuros. Las medias móviles suavizan las fluctuaciones y el RSI mide si un activo está sobrecomprado (>70) o sobreventa (<30).")
+        
         # Selección de activo
         selected_symbol = st.selectbox("Seleccionar Activo", options=prices.columns, key="tech_symbol")
         
@@ -441,6 +515,8 @@ if st.session_state.data_loaded:
     with tab2:
         st.markdown('<div class="sub-header">📊 Análisis de Rendimientos</div>', unsafe_allow_html=True)
         
+        st.info("📖 **Interpretación:** Los rendimientos muestran la rentabilidad diaria de cada activo. La media indica ganancia/promedio, la desviación mide el riesgo, y la correlación (valores cercanos a 1) muestra si los activos se mueven juntos. Correlación negativa ayuda a diversificar.")
+        
         # Estadísticas básicas
         col1, col2 = st.columns(2)
         
@@ -500,6 +576,8 @@ if st.session_state.data_loaded:
     # 3. Análisis de Volatilidad
     with tab3:
         st.markdown('<div class="sub-header">📈 Análisis de Volatilidad</div>', unsafe_allow_html=True)
+        
+        st.info("📖 **Interpretación:** La volatilidad mide el riesgo o incertidumbre de un activo. Mayor volatilidad = mayor riesgo. GARCH predice volatilidad futura. Si la volatilidad sube, el activo es más riesgoso pero puede ofrecer mayores retornos.")
         
         # Volatilidad histórica
         volatility_data = {}
@@ -571,6 +649,8 @@ if st.session_state.data_loaded:
     with tab4:
         st.markdown('<div class="sub-header">🎯 Análisis CAPM</div>', unsafe_allow_html=True)
         
+        st.info("📖 **Interpretación:** CAPM mide el riesgo sistemático de un activo vs el mercado. Beta > 1 = más volátil que el mercado, Beta < 1 = menos volátil. Alpha indica si el activo supera o no al mercado. R-cuadrado muestra cuánto del riesgo se explica por el mercado.")
+        
         with st.spinner('Calculando CAPM...'):
             capm_request = {
                 "assets": [symbol for symbol in returns.columns if symbol != 'SPY'],
@@ -627,6 +707,8 @@ if st.session_state.data_loaded:
     # 5. VaR y CVaR
     with tab5:
         st.markdown('<div class="sub-header">⚠️ Value at Risk (VaR) & Conditional VaR</div>', unsafe_allow_html=True)
+        
+        st.info("📖 **Interpretación:** VaR mide la pérdida máxima esperada en un periodo con cierto nivel de confianza. CVaR (Expected Shortfall) muestra la pérdida promedio cuando ocurre una pérdida mayor al VaR. Son medidas de riesgo extremo para eventos raros pero severos.")
         
         var_data = {}
         cvar_data = {}
@@ -698,6 +780,8 @@ if st.session_state.data_loaded:
     with tab6:
         st.markdown('<div class="sub-header">⚖️ Optimización de Portafolio (Markowitz)</div>', unsafe_allow_html=True)
         
+        st.info("📖 **Interpretación:** Markowitz busca el mejor equilibrio entre riesgo y retorno. Portafolio de mínima varianza = menor riesgo posible. Portafolio de máximo Sharpe = mejor retorno ajustado al riesgo. El ratio Sharpe mide retorno por unidad de riesgo.")
+        
         with st.spinner('Optimizando portafolio...'):
             portfolio_request = {
                 "assets": selected_assets,
@@ -741,6 +825,8 @@ if st.session_state.data_loaded:
     # 7. Señales de Trading
     with tab7:
         st.markdown('<div class="sub-header">🎯 Sistema de Señales de Trading</div>', unsafe_allow_html=True)
+        
+        st.info("📖 **Interpretación:** Las señales de trading combinan indicadores técnicos (SMA y RSI) para generar recomendaciones de compra/venta. Señal BUY = oportunidad de compra, SELL = momento de vender, HOLD = mantener posición actual. La confianza indica la fortaleza de la señal.")
         
         signals_data = {}
         
@@ -813,6 +899,8 @@ if st.session_state.data_loaded:
     # 8. Comparación con Benchmark
     with tab8:
         st.markdown('<div class="sub-header">🏆 Comparación con Benchmark (SPY)</div>', unsafe_allow_html=True)
+        
+        st.info("📖 **Interpretación:** El benchmark (SPY) representa el mercado. Alpha positivo = el activo supera al mercado, alpha negativo = lo hace peor. Beta mide sensibilidad al mercado. Tracking error muestra cuánto se desvía el activo del benchmark. Information ratio mide eficiencia vs benchmark.")
         
         with st.spinner('Comparando con benchmark...'):
             benchmark_request = {

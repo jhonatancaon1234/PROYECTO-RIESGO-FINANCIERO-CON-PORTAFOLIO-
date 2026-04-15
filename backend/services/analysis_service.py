@@ -262,16 +262,24 @@ class AnalysisService:
         try:
             import statsmodels.api as sm
             
+            # Asegurar que ambos series tengan el mismo índice
+            common_index = returns.index.intersection(benchmark_returns.index)
+            if len(common_index) == 0:
+                raise ValueError("No hay fechas comunes entre el activo y el benchmark")
+            
+            returns_aligned = returns.loc[common_index]
+            benchmark_aligned = benchmark_returns.loc[common_index]
+            
             # Regresión para alpha y beta
-            X = sm.add_constant(benchmark_returns)
-            y = returns
+            X = sm.add_constant(benchmark_aligned)
+            y = returns_aligned
             
             model = sm.OLS(y, X).fit()
             alpha = model.params['const']
-            beta = model.params[benchmark_returns.name]
+            beta = model.params[benchmark_aligned.name]
             
             # Tracking error
-            tracking_error = (returns - benchmark_returns).std() * np.sqrt(252)
+            tracking_error = (returns_aligned - benchmark_aligned).std() * np.sqrt(252)
             
             # Information ratio
             info_ratio = alpha / tracking_error if tracking_error != 0 else 0

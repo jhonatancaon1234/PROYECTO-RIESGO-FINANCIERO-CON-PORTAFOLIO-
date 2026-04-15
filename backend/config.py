@@ -16,9 +16,9 @@ class Settings(BaseSettings):
     # Configuración de activos
     DEFAULT_ASSETS: List[str] = ["AAPL", "MSFT", "XOM", "KO", "SPY"]
     
-    # Configuración de fechas
-    DEFAULT_START_DATE: str = "2024-01-01"
-    DEFAULT_END_DATE: str = "2026-04-08"
+    # Configuración de fechas (5 años atrás hasta hoy)
+    DEFAULT_START_DATE: str = "2021-04-15"
+    DEFAULT_END_DATE: str = "2026-04-15"
     
     # Configuración de riesgo
     DEFAULT_CONFIDENCE_LEVEL: float = 0.05
