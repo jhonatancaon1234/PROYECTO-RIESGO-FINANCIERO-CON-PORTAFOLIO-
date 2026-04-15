@@ -9,8 +9,8 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-from .config import settings
-from .models import (
+from config import settings
+from models import (
     AssetRequest, 
     TechnicalAnalysisRequest, 
     RiskMetricsRequest,
@@ -28,8 +28,8 @@ from .models import (
     TradingSignal,
     BenchmarkComparison
 )
-from .services.data_service import DataService
-from .services.analysis_service import AnalysisService
+from services.data_service import DataService
+from services.analysis_service import AnalysisService
 
 # Inicializar FastAPI
 app = FastAPI(

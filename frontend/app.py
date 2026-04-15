@@ -303,22 +303,36 @@ if 'data_loaded' not in st.session_state:
     st.session_state.data_loaded = False
 
 # Funciones de API
-def call_api(endpoint, data=None):
-    """Llama a un endpoint de la API"""
+def call_api(endpoint, data=None, timeout=30):
+    """Llama a un endpoint de la API con manejo robusto de errores"""
     try:
         url = f"{API_BASE_URL}{endpoint}"
-        if data:
-            response = requests.post(url, json=data)
-        else:
-            response = requests.get(url)
         
-        if response.status_code == 200:
-            return response.json()
+        # Configurar timeout para evitar bloqueos
+        if data:
+            response = requests.post(url, json=data, timeout=timeout)
         else:
-            st.error(f"Error en API: {response.status_code} - {response.text}")
+            response = requests.get(url, timeout=timeout)
+        
+        # Verificar código de estado
+        if response.status_code == 200:
+            try:
+                return response.json()
+            except ValueError as e:
+                st.error(f"Error decodificando respuesta JSON: {str(e)}")
+                return None
+        else:
+            st.error(f"Error en API ({response.status_code}): {response.text[:200]}")
             return None
+            
+    except requests.exceptions.Timeout:
+        st.error(f"Timeout: La API no respondió en {timeout} segundos")
+        return None
+    except requests.exceptions.ConnectionError:
+        st.error("Error de conexión: No se pudo conectar con la API. ¿Está el backend corriendo?")
+        return None
     except Exception as e:
-        st.error(f"Error de conexión: {str(e)}")
+        st.error(f"Error inesperado: {str(e)}")
         return None
 
 # Carga de datos

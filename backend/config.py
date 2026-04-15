@@ -4,6 +4,7 @@ Configuración del Backend FastAPI
 
 from pydantic_settings import BaseSettings
 from typing import List
+from datetime import datetime, timedelta
 
 
 class Settings(BaseSettings):
@@ -16,9 +17,9 @@ class Settings(BaseSettings):
     # Configuración de activos
     DEFAULT_ASSETS: List[str] = ["AAPL", "MSFT", "XOM", "KO", "SPY"]
     
-    # Configuración de fechas (5 años atrás hasta hoy)
-    DEFAULT_START_DATE: str = "2021-04-15"
-    DEFAULT_END_DATE: str = "2026-04-15"
+    # Configuración de fechas (5 años atrás hasta hoy) - Dinámico
+    DEFAULT_START_DATE: str = (datetime.now() - timedelta(days=5*365)).strftime('%Y-%m-%d')
+    DEFAULT_END_DATE: str = datetime.now().strftime('%Y-%m-%d')
     
     # Configuración de riesgo
     DEFAULT_CONFIDENCE_LEVEL: float = 0.05
