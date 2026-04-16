@@ -421,29 +421,6 @@ if st.session_state.data_loaded:
     with tab1:
         st.markdown('<div class="sub-header">🔍 Análisis Técnico</div>', unsafe_allow_html=True)
         
-        st.info("""
-        📖 **Interpretación Técnica Profesional:**
-        
-        **📈 Medias Móviles Simples (SMA):**
-        - **SMA 20 (Corta)**: Promedio de precios de los últimos 20 días - reacciona rápido a cambios
-        - **SMA 50 (Larga)**: Promedio de precios de los últimos 50 días - muestra tendencia general
-        - **Cruce Alcista**: Cuando SMA 20 cruza por encima de SMA 50 → Señal de COMPRA
-        - **Cruce Bajista**: Cuando SMA 20 cruza por debajo de SMA 50 → Señal de VENTA
-        - **Importancia**: Los cruces son más confiables cuando ocurren con volumen alto
-        
-        **📊 RSI (Índice de Fuerza Relativa):**
-        - **Rango**: 0 a 100
-        - **Sobrecompra (70-100)**: El activo está muy comprado, posible corrección a la baja
-        - **Sobreventa (0-30)**: El activo está muy vendido, posible rebote al alza
-        - **Zona Neutral (30-70)**: Tendencia estable, no hay señales extremas
-        - **Divergencias**: Cuando el precio hace máximos/mínimos pero el RSI no los confirma → Señal de cambio de tendencia
-        
-        **🎯 Estrategia Combinada:**
-        - **Señal Fuerte de COMPRA**: SMA 20 > SMA 50 + RSI < 30 (Tendencia alcista + Sobreventa)
-        - **Señal Fuerte de VENTA**: SMA 20 < SMA 50 + RSI > 70 (Tendencia bajista + Sobrecompra)
-        - **Señal Débil**: Cuando solo uno de los indicadores da señal
-        """)
-        
         # Selección de activo
         selected_symbol = st.selectbox("Seleccionar Activo", options=prices.columns, key="tech_symbol")
         
@@ -465,6 +442,15 @@ if st.session_state.data_loaded:
                     col1, col2 = st.columns(2)
                     
                     with col1:
+                        # Interpretación de Medias Móviles
+                        st.markdown("### 📈 Medias Móviles (SMA)")
+                        st.info("""
+                        **SMA 20 (Corta)**: Promedio de precios de los últimos 20 días - reacciona rápido a cambios
+                        **SMA 50 (Larga)**: Promedio de precios de los últimos 50 días - muestra tendencia general
+                        **Cruce Alcista**: Cuando SMA 20 cruza por encima de SMA 50 → Señal de COMPRA
+                        **Cruce Bajista**: Cuando SMA 20 cruza por debajo de SMA 50 → Señal de VENTA
+                        """)
+                        
                         # Gráfico de precios con indicadores
                         fig = go.Figure()
                         
@@ -505,6 +491,15 @@ if st.session_state.data_loaded:
                         st.plotly_chart(fig, use_container_width=True)
                     
                     with col2:
+                        # Interpretación de RSI
+                        st.markdown("### 📊 RSI (Índice de Fuerza Relativa)")
+                        st.info("""
+                        **Rango**: 0 a 100
+                        **Sobrecompra (70-100)**: El activo está muy comprado, posible corrección a la baja
+                        **Sobreventa (0-30)**: El activo está muy vendido, posible rebote al alza
+                        **Zona Neutral (30-70)**: Tendencia estable, no hay señales extremas
+                        """)
+                        
                         # Calcular RSI histórico correctamente
                         close_prices = prices[selected_symbol]
                         delta = close_prices.diff()
@@ -593,11 +588,28 @@ if st.session_state.data_loaded:
         col1, col2 = st.columns(2)
         
         with col1:
+            # Interpretación de Estadísticas Descriptivas
+            st.markdown("### 📊 Estadísticas Descriptivas")
+            st.info("""
+            **Media (Mean)**: Retorno promedio diario. Valores positivos indican ganancia promedio, negativos indican pérdida
+            **Desviación Estándar (Std)**: Mide la volatilidad/riesgo. Mayor desviación = mayor incertidumbre
+            **Mínimo y Máximo**: Los extremos muestran los peores y mejores días de trading
+            **Ejemplo**: Si media = 0.001 (0.1% diario) y std = 0.02 (2%), el activo gana 0.1% promedio pero con fluctuaciones de ±2%
+            """)
+            
             # Tabla de estadísticas
             basic_stats = returns.describe().T
             st.dataframe(basic_stats[['mean', 'std', 'min', 'max']].round(4))
         
         with col2:
+            # Interpretación de Distribución de Retornos
+            st.markdown("### 📈 Distribución de Retornos")
+            st.info("""
+            **Forma de la curva**: Una distribución normal (campana) indica comportamiento estable
+            **Colas anchas**: Mayor probabilidad de eventos extremos (ganancias/pérdidas grandes)
+            **Sesgo**: Si la curva se inclina a la derecha = más ganancias extremas; a la izquierda = más pérdidas extremas
+            """)
+            
             # Distribución de rendimientos
             selected_asset_ret = st.selectbox("Seleccionar Activo para Distribución", options=returns.columns, key="dist_symbol")
             
@@ -685,6 +697,15 @@ if st.session_state.data_loaded:
                 volatility_data[symbol] = vol_response["data"]["historical_volatility"]
         
         if volatility_data:
+            # Interpretación de Volatilidad Histórica
+            st.markdown("### 📊 Volatilidad Histórica")
+            st.info("""
+            **Definición**: Mide la variabilidad de los retornos de un activo en el tiempo
+            **Cálculo**: Desviación estándar de los retornos anualizada (multiplicada por √252 días hábiles)
+            **Interpretación**: 20% de volatilidad significa que el precio puede variar ±20% en un año
+            **Ejemplo**: Si un activo tiene 30% de volatilidad vs otro con 15%, el primero es el doble de riesgoso
+            """)
+            
             fig = go.Figure()
             fig.add_trace(go.Bar(
                 x=list(volatility_data.keys()),
@@ -808,6 +829,16 @@ if st.session_state.data_loaded:
                             st.success(f"🟢 {symbol}: β={beta:.4f} - Defensivo")
                 
                 with col2:
+                    # Interpretación de Gráfico de Betas
+                    st.markdown("### 📊 Gráfico de Betas")
+                    st.info("""
+                    **Beta = 1**: El activo se mueve exactamente como el mercado (SPY)
+                    **Beta > 1**: El activo es más volátil que el mercado (amplifica movimientos)
+                    **Beta < 1**: El activo es menos volátil que el mercado (amortigua movimientos)
+                    **Beta negativo**: El activo se mueve en dirección opuesta al mercado (raro)
+                    **Ejemplo**: β = 1.5 significa que si el mercado sube 10%, el activo tiende a subir 15%
+                    """)
+                    
                     fig_beta = go.Figure()
                     fig_beta.add_trace(go.Bar(
                         x=list(capm_data.keys()),
@@ -888,6 +919,14 @@ if st.session_state.data_loaded:
         col1, col2 = st.columns(2)
         
         with col1:
+            # Interpretación de VaR
+            st.markdown("### ⚠️ Value at Risk (VaR)")
+            st.info("""
+            **Definición**: Pérdida máxima esperada con un nivel de confianza dado
+            **Ejemplo con 95% de confianza**: VaR = 0.03 significa que hay 95% de probabilidad de no perder más del 3% en un día
+            **Interpretación práctica**: Si tienes $10,000 invertidos y VaR = 0.03, la pérdida máxima esperada es $300 (en el 95% de los casos)
+            """)
+            
             fig_var = go.Figure()
             fig_var.add_trace(go.Bar(
                 x=risk_df.index,
@@ -907,6 +946,15 @@ if st.session_state.data_loaded:
             st.plotly_chart(fig_var, use_container_width=True)
         
         with col2:
+            # Interpretación de CVaR
+            st.markdown("### ⚠️ Conditional VaR (CVaR)")
+            st.info("""
+            **Definición**: Pérdida promedio CUANDO se excede el VaR (en el peor de los casos)
+            **Diferencia con VaR**: VaR dice "cuánto puedes perder"; CVaR dice "cuánto pierdes en el peor escenario"
+            **Ejemplo**: Si VaR = 0.03 y CVaR = 0.05, en los peores días, la pérdida promedio es 5%
+            **Importancia**: CVaR es más conservador y realista que VaR
+            """)
+            
             fig_cvar = go.Figure()
             fig_cvar.add_trace(go.Bar(
                 x=risk_df.index,
