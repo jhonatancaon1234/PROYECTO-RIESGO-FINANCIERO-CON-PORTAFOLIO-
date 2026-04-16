@@ -422,19 +422,26 @@ if st.session_state.data_loaded:
         st.markdown('<div class="sub-header">🔍 Análisis Técnico</div>', unsafe_allow_html=True)
         
         st.info("""
-        📖 **Interpretación Detallada:**
+        📖 **Interpretación Técnica Profesional:**
         
-        **Medias Móviles (SMA):**
-        - **SMA 20 > SMA 50**: Tendencia alcista (señal de COMPRA)
-        - **SMA 20 < SMA 50**: Tendencia bajista (señal de VENTA)
-        - Cruces entre medias indican cambios de tendencia
+        **📈 Medias Móviles Simples (SMA):**
+        - **SMA 20 (Corta)**: Promedio de precios de los últimos 20 días - reacciona rápido a cambios
+        - **SMA 50 (Larga)**: Promedio de precios de los últimos 50 días - muestra tendencia general
+        - **Cruce Alcista**: Cuando SMA 20 cruza por encima de SMA 50 → Señal de COMPRA
+        - **Cruce Bajista**: Cuando SMA 20 cruza por debajo de SMA 50 → Señal de VENTA
+        - **Importancia**: Los cruces son más confiables cuando ocurren con volumen alto
         
-        **RSI (Relative Strength Index):**
-        - **RSI > 70**: Sobrecompra (posible corrección a la baja)
-        - **RSI < 30**: Sobreventa (posible rebote al alza)
-        - **RSI entre 30-70**: Zona neutral
+        **📊 RSI (Índice de Fuerza Relativa):**
+        - **Rango**: 0 a 100
+        - **Sobrecompra (70-100)**: El activo está muy comprado, posible corrección a la baja
+        - **Sobreventa (0-30)**: El activo está muy vendido, posible rebote al alza
+        - **Zona Neutral (30-70)**: Tendencia estable, no hay señales extremas
+        - **Divergencias**: Cuando el precio hace máximos/mínimos pero el RSI no los confirma → Señal de cambio de tendencia
         
-        **Uso combinado:** Las señales son más fuertes cuando SMA y RSI coinciden en la misma dirección.
+        **🎯 Estrategia Combinada:**
+        - **Señal Fuerte de COMPRA**: SMA 20 > SMA 50 + RSI < 30 (Tendencia alcista + Sobreventa)
+        - **Señal Fuerte de VENTA**: SMA 20 < SMA 50 + RSI > 70 (Tendencia bajista + Sobrecompra)
+        - **Señal Débil**: Cuando solo uno de los indicadores da señal
         """)
         
         # Selección de activo
@@ -559,7 +566,28 @@ if st.session_state.data_loaded:
     with tab2:
         st.markdown('<div class="sub-header">📊 Análisis de Rendimientos</div>', unsafe_allow_html=True)
         
-        st.info("📖 **Interpretación:** Los rendimientos muestran la rentabilidad diaria de cada activo. La media indica ganancia/promedio, la desviación mide el riesgo, y la correlación (valores cercanos a 1) muestra si los activos se mueven juntos. Correlación negativa ayuda a diversificar.")
+        st.info("""
+        📖 **Interpretación Profesional de Rendimientos:**
+        
+        **📊 Estadísticas Descriptivas:**
+        - **Media (Mean)**: Retorno promedio diario. Valores positivos indican ganancia promedio, negativos indican pérdida
+        - **Desviación Estándar (Std)**: Mide la volatilidad/riesgo. Mayor desviación = mayor incertidumbre
+        - **Mínimo y Máximo**: Los extremos muestran los peores y mejores días de trading
+        - **Ejemplo**: Si media = 0.001 (0.1% diario) y std = 0.02 (2%), el activo gana 0.1% promedio pero con fluctuaciones de ±2%
+        
+        **📈 Distribución de Retornos:**
+        - **Forma de la curva**: Una distribución normal (campana) indica comportamiento estable
+        - **Colas anchas**: Mayor probabilidad de eventos extremos (ganancias/pérdidas grandes)
+        - **Sesgo**: Si la curva se inclina a la derecha = más ganancias extremas; a la izquierda = más pérdidas extremas
+        
+        **🔗 Matriz de Correlación:**
+        - **Rango**: -1 a +1
+        - **+1**: Los activos se mueven perfectamente en la misma dirección
+        - **0**: No hay relación entre los movimientos
+        - **-1**: Los activos se mueven en direcciones opuestas (ideal para diversificación)
+        - **Ejemplo práctico**: Si AAPL y MSFT tienen correlación 0.8, cuando AAPL sube 1%, MSFT tiende a subir 0.8%
+        - **Diversificación**: Buscar activos con correlación baja o negativa reduce el riesgo del portafolio
+        """)
         
         # Estadísticas básicas
         col1, col2 = st.columns(2)
@@ -621,7 +649,31 @@ if st.session_state.data_loaded:
     with tab3:
         st.markdown('<div class="sub-header">📈 Análisis de Volatilidad</div>', unsafe_allow_html=True)
         
-        st.info("📖 **Interpretación:** La volatilidad mide el riesgo o incertidumbre de un activo. Mayor volatilidad = mayor riesgo. GARCH predice volatilidad futura. Si la volatilidad sube, el activo es más riesgoso pero puede ofrecer mayores retornos.")
+        st.info("""
+        📖 **Interpretación Profesional de Volatilidad:**
+        
+        **📊 Volatilidad Histórica:**
+        - **Definición**: Mide la variabilidad de los retornos de un activo en el tiempo
+        - **Cálculo**: Desviación estándar de los retornos anualizada (multiplicada por √252 días hábiles)
+        - **Interpretación**: 20% de volatilidad significa que el precio puede variar ±20% en un año
+        - **Ejemplo**: Si un activo tiene 30% de volatilidad vs otro con 15%, el primero es el doble de riesgoso
+        
+        **📈 Gráfico de Barras (Volatilidad por Activo):**
+        - **Comparación directa**: Permite ver qué activos son más riesgosos
+        - **Ordenamiento**: Los activos con barras más altas tienen mayor incertidumbre
+        - **Uso práctico**: Activos con baja volatilidad (10-15%) son más estables; alta volatilidad (30%+) son más especulativos
+        
+        **📊 Modelo GARCH (Volatilidad Futura):**
+        - **Propósito**: Predice la volatilidad futura basada en patrones históricos
+        - **Línea punteada**: Muestra la volatilidad esperada por el modelo GARCH
+        - **Picos de volatilidad**: Indican períodos de crisis o alta incertidumbre del mercado
+        - **Clusters**: La volatilidad tiende a agruparse - períodos tranquilos seguidos de períodos turbulentos
+        
+        **🎯 Aplicación Práctica:**
+        - **Gestión de riesgo**: Mayor volatilidad → reducir posición
+        - **Opciones financieras**: La volatilidad es clave para precios de opciones
+        - **Timing**: Comprar en períodos de baja volatilidad, ser cauteloso en alta volatilidad
+        """)
         
         # Volatilidad histórica
         volatility_data = {}
@@ -697,7 +749,32 @@ if st.session_state.data_loaded:
     with tab4:
         st.markdown('<div class="sub-header">🎯 Análisis CAPM</div>', unsafe_allow_html=True)
         
-        st.info("📖 **Interpretación:** CAPM mide el riesgo sistemático de un activo vs el mercado. Beta > 1 = más volátil que el mercado, Beta < 1 = menos volátil. Alpha indica si el activo supera o no al mercado. R-cuadrado muestra cuánto del riesgo se explica por el mercado.")
+        st.info("""
+        📖 **Interpretación Profesional del CAPM:**
+        
+        **📊 Beta (β) - Riesgo Sistemático:**
+        - **β = 1**: El activo se mueve exactamente como el mercado (SPY)
+        - **β > 1**: El activo es más volátil que el mercado (amplifica movimientos)
+        - **β < 1**: El activo es menos volátil que el mercado (amortigua movimientos)
+        - **β negativo**: El activo se mueve en dirección opuesta al mercado (raro)
+        - **Ejemplo**: β = 1.5 significa que si el mercado sube 10%, el activo tiende a subir 15%
+        
+        **📈 Alpha (α) - Retorno Excedente:**
+        - **α > 0**: El activo supera al mercado (buen desempeño)
+        - **α < 0**: El activo bajo-performa vs el mercado (mal desempeño)
+        - **α = 0**: El activo se desempeña exactamente como predice su beta
+        - **Importancia**: Alpha positivo indica habilidad del gestor o ventajas competitivas
+        
+        **🎯 R-cuadrado (R²) - Calidad del Ajuste:**
+        - **R² = 1**: El 100% del movimiento del activo se explica por el mercado
+        - **R² bajo**: Otros factores además del mercado afectan al activo
+        - **Interpretación**: R² alto (>0.7) indica que beta es confiable; R² bajo sugiere que hay riesgos específicos del activo
+        
+        **📊 Clasificación de Riesgo:**
+        - **Defensivo (β < 0.8)**: Baja sensibilidad al mercado, estable en crisis
+        - **Moderado (0.8 < β < 1.2)**: Riesgo similar al mercado
+        - **Cíclico/Agresivo (β > 1.2)**: Alta sensibilidad, amplifica ganancias y pérdidas
+        """)
         
         with st.spinner('Calculando CAPM...'):
             capm_request = {
@@ -756,7 +833,31 @@ if st.session_state.data_loaded:
     with tab5:
         st.markdown('<div class="sub-header">⚠️ Value at Risk (VaR) & Conditional VaR</div>', unsafe_allow_html=True)
         
-        st.info("📖 **Interpretación:** VaR mide la pérdida máxima esperada en un periodo con cierto nivel de confianza. CVaR (Expected Shortfall) muestra la pérdida promedio cuando ocurre una pérdida mayor al VaR. Son medidas de riesgo extremo para eventos raros pero severos.")
+        st.info("""
+        📖 **Interpretación Profesional de Riesgo (VaR & CVaR):**
+        
+        **⚠️ Value at Risk (VaR):**
+        - **Definición**: Pérdida máxima esperada en un horizonte de tiempo con un nivel de confianza dado
+        - **Ejemplo con 95% de confianza**: VaR = 0.03 significa que hay 95% de probabilidad de no perder más del 3% en un día
+        - **Interpretación práctica**: Si tienes $10,000 invertidos y VaR = 0.03, la pérdida máxima esperada es $300 (en el 95% de los casos)
+        - **Nivel de confianza**: 95% (α=0.05) es estándar; 99% es más conservador
+        
+        **⚠️ Conditional VaR (CVaR / Expected Shortfall):**
+        - **Definición**: Pérdida promedio CUANDO se excede el VaR (en el 5% peor de los casos)
+        - **Diferencia con VaR**: VaR dice "cuánto puedes perder"; CVaR dice "cuánto pierdes en el peor escenario"
+        - **Ejemplo**: Si VaR = 0.03 y CVaR = 0.05, en los peores días (5%), la pérdida promedio es 5%
+        - **Importancia**: CVaR es más conservador y realista que VaR
+        
+        **📊 Comparación entre Activos:**
+        - **VaR más alto**: Mayor riesgo de pérdida diaria
+        - **CVaR > VaR**: Siempre, porque CVaR mide el promedio de las peores pérdidas
+        - **Brecha entre CVaR y VaR**: Una brecha grande indica colas pesadas (eventos extremos más probables)
+        
+        **🎯 Uso Práctico:**
+        - **Gestión de capital**: No invertir más de lo que el VaR sugiere como pérdida tolerable
+        - **Límites de riesgo**: Establecer límites basados en VaR para controlar exposición
+        - **Stress testing**: CVaR ayuda a prepararse para escenarios extremos
+        """)
         
         var_data = {}
         cvar_data = {}
@@ -829,22 +930,36 @@ if st.session_state.data_loaded:
         st.markdown('<div class="sub-header">⚖️ Optimización de Portafolio (Markowitz)</div>', unsafe_allow_html=True)
         
         st.info("""
-        📖 **Interpretación Detallada:**
+        📖 **Interpretación Profesional - Teoría Moderna de Portafolio:**
         
-        **Portafolio de Mínima Varianza:**
-        - Busca el menor riesgo posible combinando activos
-        - Ideal para inversores conservadores
-        - No considera el retorno esperado
+        **⚖️ Portafolio de Mínima Varianza:**
+        - **Objetivo**: Minimizar el riesgo total del portafolio mediante diversificación óptima
+        - **Cómo funciona**: Combina activos con correlaciones bajas o negativas para reducir volatilidad
+        - **Cuándo usarlo**: Para inversores conservadores o en tiempos de alta incertidumbre
+        - **Limitación**: No considera el retorno esperado, solo minimiza riesgo
+        - **Interpretación de pesos**: Los activos con menor volatilidad y correlación negativa tendrán mayor peso
         
-        **Portafolio de Máximo Sharpe:**
-        - Busca el mejor retorno ajustado al riesgo
-        - Ratio Sharpe = (Retorno - Tasa Libre de Riesgo) / Volatilidad
-        - Ideal para inversores que buscan eficiencia
+        **🎯 Portafolio de Máximo Sharpe (Tangente):**
+        - **Objetivo**: Maximizar el retorno por unidad de riesgo asumido
+        - **Ratio Sharpe**: (Retorno del Portafolio - Tasa Libre de Riesgo) / Volatilidad del Portafolio
+        - **Cuándo usarlo**: Para inversores que buscan eficiencia óptima riesgo-retorno
+        - **Interpretación**: Es el portafolio más eficiente en la frontera eficiente
+        - **Ventaja**: Considera tanto retorno como riesgo simultáneamente
         
-        **Ratio Sharpe:**
-        - > 1: Bueno
-        - > 2: Excelente
-        - > 3: Sobresaliente
+        **📊 Interpretación de Métricas:**
+        - **Retorno Anualizado**: Ganancia promedio esperada en un año (ej: 0.15 = 15% anual)
+        - **Volatilidad Anualizada**: Riesgo o variabilidad esperada (ej: 0.20 = ±20% anual)
+        - **Sharpe Ratio**: 
+          * < 1: Retorno insuficiente para el riesgo asumido
+          * 1-2: Buen equilibrio riesgo-retorno
+          * > 2: Excelente eficiencia (alto retorno con bajo riesgo)
+          * > 3: Excepcional (raro de encontrar)
+        
+        **🎯 Gráficos de Torta (Pesos del Portafolio):**
+        - Muestran la distribución óptima de capital entre activos
+        - **Peso alto**: El activo contribuye significativamente a la optimización
+        - **Peso bajo/cero**: El activo no mejora la relación riesgo-retorno en esta combinación
+        - **Diferencia entre portafolios**: Mínima Varianza prioriza estabilidad; Máximo Sharpe prioriza eficiencia
         """)
         
         with st.spinner('Optimizando portafolio...'):
@@ -891,7 +1006,31 @@ if st.session_state.data_loaded:
     with tab7:
         st.markdown('<div class="sub-header">🎯 Sistema de Señales de Trading</div>', unsafe_allow_html=True)
         
-        st.info("📖 **Interpretación:** Las señales de trading combinan indicadores técnicos (SMA y RSI) para generar recomendaciones de compra/venta. Señal BUY = oportunidad de compra, SELL = momento de vender, HOLD = mantener posición actual. La confianza indica la fortaleza de la señal.")
+        st.info("""
+        📖 **Interpretación Profesional del Sistema de Señales:**
+        
+        **🎯 Estrategia Combinada (SMA + RSI):**
+        - **Señal de COMPRA (BUY)**: SMA 20 > SMA 50 (tendencia alcista) + RSI < 30 (sobreventa)
+        - **Señal de VENTA (SELL)**: SMA 20 < SMA 50 (tendencia bajista) + RSI > 70 (sobrecompra)
+        - **Señal NEUTRAL (HOLD)**: Cuando no se cumplen ambas condiciones simultáneamente
+        
+        **📊 Niveles de Confianza:**
+        - **Confianza Alta (>0.7)**: Ambos indicadores dan señales claras y fuertes
+        - **Confianza Media (0.4-0.7)**: Un indicador es más fuerte que el otro
+        - **Confianza Baja (<0.4)**: Señales débiles o contradictorias
+        
+        **📈 Interpretación del Gráfico:**
+        - **Triángulos Verdes (▲)**: Puntos históricos donde se generaron señales de COMPRA
+        - **Triángulos Rojos (▼)**: Puntos históricos donde se generaron señales de VENTA
+        - **Línea Negra**: Evolución del precio del activo en el tiempo
+        - **Hover/Tooltip**: Al pasar el mouse muestra precio exacto y valor de RSI en ese momento
+        
+        **🎯 Uso Práctico:**
+        - **Señales Históricas**: Muestran cuándo hubieran sido buenos momentos de entrada/salida
+        - **Validación**: Permite evaluar qué tan bien hubiera funcionado la estrategia
+        - **Frecuencia**: Pocas señales = estrategia conservadora; muchas señales = estrategia agresiva
+        - **Combinación con otros indicadores**: Usar junto con análisis fundamental para mejores resultados
+        """)
         
         signals_data = {}
         
@@ -1015,7 +1154,46 @@ if st.session_state.data_loaded:
     with tab8:
         st.markdown('<div class="sub-header">🏆 Comparación con Benchmark (SPY)</div>', unsafe_allow_html=True)
         
-        st.info("📖 **Interpretación:** El benchmark (SPY) representa el mercado. Alpha positivo = el activo supera al mercado, alpha negativo = lo hace peor. Beta mide sensibilidad al mercado. Tracking error muestra cuánto se desvía el activo del benchmark. Information ratio mide eficiencia vs benchmark.")
+        st.info("""
+        📖 **Interpretación Profesional - Análisis vs Benchmark:**
+        
+        **📊 Retornos Acumulados:**
+        - **Línea más alta**: El activo supera al benchmark (SPY) en rendimiento
+        - **Línea más baja**: El activo bajo-performa vs el benchmark
+        - **Divergencia creciente**: El activo se desempeña consistentemente mejor o peor
+        - **Convergencia**: El activo tiende a seguir el mismo patrón que el mercado
+        
+        **📈 Alpha (α) - Exceso de Retorno:**
+        - **Alpha > 0**: El activo genera retornos superiores al mercado después de ajustar por riesgo
+        - **Alpha < 0**: El activo genera retornos inferiores al mercado
+        - **Alpha = 0**: El activo se desempeña exactamente como predice su beta
+        - **Importancia**: Alpha positivo indica habilidad del gestor, ventajas competitivas o factores específicos
+        
+        **📊 Beta (β) - Sensibilidad al Mercado:**
+        - **Beta > 1**: El activo es más volátil que el mercado (amplifica movimientos)
+        - **Beta < 1**: El activo es menos volátil que el mercado (amortigua movimientos)
+        - **Beta = 1**: El activo se mueve en línea con el mercado
+        - **Beta negativo**: El activo se mueve en dirección opuesta al mercado (raro)
+        
+        **🎯 Tracking Error:**
+        - **Definición**: Desviación estándar de los retornos del activo menos los retornos del benchmark
+        - **Interpretación**: Mide cuánto se desvía el activo del benchmark
+        - **Tracking Error bajo**: El activo sigue de cerca al benchmark (estrategia indexada)
+        - **Tracking Error alto**: El activo tiene comportamiento muy diferente al benchmark (estrategia activa)
+        
+        **📊 Information Ratio (IR):**
+        - **Fórmula**: (Alpha del activo) / (Tracking Error)
+        - **IR > 0**: El activo genera alpha positivo por unidad de desviación del benchmark
+        - **IR < 0**: El activo genera alpha negativo (pérdida de valor)
+        - **IR alto**: Alta eficiencia en generar retornos excedentes
+        - **IR bajo**: Baja eficiencia o alpha negativo
+        
+        **🎯 Uso Práctico:**
+        - **Gestión Activa**: Buscar activos con alpha positivo y alto information ratio
+        - **Gestión Pasiva**: Buscar activos con bajo tracking error (para replicar benchmark)
+        - **Evaluación de Fondos**: Comparar fondos mutuos o ETFs vs sus benchmarks
+        - **Atribución de Rendimiento**: Entender qué parte del rendimiento se debe al mercado (beta) y qué parte al manejo (alpha)
+        """)
         
         with st.spinner('Comparando con benchmark...'):
             benchmark_request = {
