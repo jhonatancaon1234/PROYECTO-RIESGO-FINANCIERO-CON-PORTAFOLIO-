@@ -930,54 +930,76 @@ if st.session_state.data_loaded:
                     line=dict(color='black', width=2)
                 ))
                 
-                # Señal actual
-                signal_type = signal_info['signal_type']
-                price = signal_info['price']
-                confidence = signal_info.get('confidence', 0)
+                # Calcular señales históricas basadas en SMA y RSI
+                close_prices = prices[selected_signal_asset]
                 
-                # Mostrar señal actual
-                if signal_type == 'BUY':
+                # SMA 20 y SMA 50
+                sma_20 = close_prices.rolling(window=20).mean()
+                sma_50 = close_prices.rolling(window=50).mean()
+                
+                # RSI
+                delta = close_prices.diff()
+                gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+                loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+                rs = gain / loss
+                rsi = 100 - (100 / (1 + rs))
+                
+                # Identificar señales de compra y venta a lo largo del tiempo
+                buy_signals = []
+                sell_signals = []
+                buy_dates = []
+                sell_dates = []
+                buy_prices = []
+                sell_prices = []
+                
+                for i in range(50, len(close_prices)):  # Empezar después de que SMA50 tenga datos
+                    # Señal de COMPRA: SMA20 > SMA50 y RSI < 30
+                    if sma_20.iloc[i] > sma_50.iloc[i] and rsi.iloc[i] < 30:
+                        buy_signals.append(True)
+                        buy_dates.append(close_prices.index[i])
+                        buy_prices.append(close_prices.iloc[i])
+                    # Señal de VENTA: SMA20 < SMA50 y RSI > 70
+                    elif sma_20.iloc[i] < sma_50.iloc[i] and rsi.iloc[i] > 70:
+                        sell_signals.append(True)
+                        sell_dates.append(close_prices.index[i])
+                        sell_prices.append(close_prices.iloc[i])
+                
+                # Mostrar señales de COMPRA en el gráfico
+                if buy_dates:
                     fig_signals.add_trace(go.Scatter(
-                        x=[prices.index[-1]],
-                        y=[price],
+                        x=buy_dates,
+                        y=buy_prices,
                         mode='markers',
-                        name=f'Señal de COMPRA (Confianza: {confidence:.2f})',
-                        marker=dict(color='green', symbol='triangle-up', size=20)
-                    ))
-                elif signal_type == 'SELL':
-                    fig_signals.add_trace(go.Scatter(
-                        x=[prices.index[-1]],
-                        y=[price],
-                        mode='markers',
-                        name=f'Señal de VENTA (Confianza: {confidence:.2f})',
-                        marker=dict(color='red', symbol='triangle-down', size=20)
-                    ))
-                elif signal_type == 'HOLD':
-                    fig_signals.add_trace(go.Scatter(
-                        x=[prices.index[-1]],
-                        y=[price],
-                        mode='markers',
-                        name=f'Señal NEUTRAL (Confianza: {confidence:.2f})',
-                        marker=dict(color='yellow', symbol='circle', size=15)
+                        name='Señal de COMPRA',
+                        marker=dict(color='green', symbol='triangle-up', size=15),
+                        text=[f'COMPRA<br>Precio: ${p:.2f}<br>RSI: {rsi.loc[d]:.2f}' for d, p in zip(buy_dates, buy_prices)],
+                        hoverinfo='text'
                     ))
                 
-                # Añadir anotación de la señal
-                fig_signals.add_annotation(
-                    x=prices.index[-1],
-                    y=price,
-                    text=f"{signal_type}<br>Confianza: {confidence:.2f}",
-                    showarrow=True,
-                    arrowhead=2,
-                    arrowsize=1,
-                    arrowwidth=2,
-                    arrowcolor="black",
-                    ax=40,
-                    ay=-40,
-                    bgcolor="white",
-                    bordercolor="black",
-                    borderwidth=2,
-                    font=dict(size=12, color="black")
-                )
+                # Mostrar señales de VENTA en el gráfico
+                if sell_dates:
+                    fig_signals.add_trace(go.Scatter(
+                        x=sell_dates,
+                        y=sell_prices,
+                        mode='markers',
+                        name='Señal de VENTA',
+                        marker=dict(color='red', symbol='triangle-down', size=15),
+                        text=[f'VENTA<br>Precio: ${p:.2f}<br>RSI: {rsi.loc[d]:.2f}' for d, p in zip(sell_dates, sell_prices)],
+                        hoverinfo='text'
+                    ))
+                
+                # Si no hay señales históricas, mostrar mensaje
+                if not buy_dates and not sell_dates:
+                    fig_signals.add_annotation(
+                        x=prices.index[len(prices)//2],
+                        y=close_prices.iloc[len(close_prices)//2],
+                        text="No hay señales claras de compra/venta en el período",
+                        showarrow=False,
+                        font=dict(size=14, color="gray"),
+                        bgcolor="rgba(255,255,255,0.8)",
+                        bordercolor="gray",
+                        borderwidth=1
+                    )
                 
                 fig_signals.update_layout(
                     title=f'Señales de Trading - {selected_signal_asset}',
