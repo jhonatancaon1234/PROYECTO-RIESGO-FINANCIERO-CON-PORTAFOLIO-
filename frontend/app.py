@@ -258,7 +258,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Título principal
-st.markdown('<div class="main-header">📊 Dashboard de Riesgo Financiero</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">📈 Sistema de Gestión de Portafolio</div>', unsafe_allow_html=True)
 
 # Sidebar
 st.sidebar.markdown("## 📈 Configuración")
@@ -421,7 +421,21 @@ if st.session_state.data_loaded:
     with tab1:
         st.markdown('<div class="sub-header">🔍 Análisis Técnico</div>', unsafe_allow_html=True)
         
-        st.info("📖 **Interpretación:** El análisis técnico estudia el comportamiento histórico de precios para predecir movimientos futuros. Las medias móviles suavizan las fluctuaciones y el RSI mide si un activo está sobrecomprado (>70) o sobreventa (<30).")
+        st.info("""
+        📖 **Interpretación Detallada:**
+        
+        **Medias Móviles (SMA):**
+        - **SMA 20 > SMA 50**: Tendencia alcista (señal de COMPRA)
+        - **SMA 20 < SMA 50**: Tendencia bajista (señal de VENTA)
+        - Cruces entre medias indican cambios de tendencia
+        
+        **RSI (Relative Strength Index):**
+        - **RSI > 70**: Sobrecompra (posible corrección a la baja)
+        - **RSI < 30**: Sobreventa (posible rebote al alza)
+        - **RSI entre 30-70**: Zona neutral
+        
+        **Uso combinado:** Las señales son más fuertes cuando SMA y RSI coinciden en la misma dirección.
+        """)
         
         # Selección de activo
         selected_symbol = st.selectbox("Seleccionar Activo", options=prices.columns, key="tech_symbol")
@@ -484,11 +498,19 @@ if st.session_state.data_loaded:
                         st.plotly_chart(fig, use_container_width=True)
                     
                     with col2:
-                        # RSI
+                        # Calcular RSI histórico correctamente
+                        close_prices = prices[selected_symbol]
+                        delta = close_prices.diff()
+                        gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+                        loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+                        rs = gain / loss
+                        rsi_values = 100 - (100 / (1 + rs))
+                        
+                        # Gráfico de RSI
                         fig_rsi = go.Figure()
                         fig_rsi.add_trace(go.Scatter(
                             x=prices.index,
-                            y=[indicators['rsi']] * len(prices),
+                            y=rsi_values,
                             mode='lines',
                             name='RSI',
                             line=dict(color='purple', width=2)
@@ -806,7 +828,24 @@ if st.session_state.data_loaded:
     with tab6:
         st.markdown('<div class="sub-header">⚖️ Optimización de Portafolio (Markowitz)</div>', unsafe_allow_html=True)
         
-        st.info("📖 **Interpretación:** Markowitz busca el mejor equilibrio entre riesgo y retorno. Portafolio de mínima varianza = menor riesgo posible. Portafolio de máximo Sharpe = mejor retorno ajustado al riesgo. El ratio Sharpe mide retorno por unidad de riesgo.")
+        st.info("""
+        📖 **Interpretación Detallada:**
+        
+        **Portafolio de Mínima Varianza:**
+        - Busca el menor riesgo posible combinando activos
+        - Ideal para inversores conservadores
+        - No considera el retorno esperado
+        
+        **Portafolio de Máximo Sharpe:**
+        - Busca el mejor retorno ajustado al riesgo
+        - Ratio Sharpe = (Retorno - Tasa Libre de Riesgo) / Volatilidad
+        - Ideal para inversores que buscan eficiencia
+        
+        **Ratio Sharpe:**
+        - > 1: Bueno
+        - > 2: Excelente
+        - > 3: Sobresaliente
+        """)
         
         with st.spinner('Optimizando portafolio...'):
             portfolio_request = {

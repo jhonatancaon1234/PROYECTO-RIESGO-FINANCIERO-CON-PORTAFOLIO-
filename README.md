@@ -1,6 +1,6 @@
-# 📊 Dashboard de Riesgo Financiero
+# 📈 Sistema de Gestión de Portafolio
 
-Dashboard profesional para análisis de riesgo financiero con modelos avanzados (CAPM, GARCH, VaR, Markowitz).
+Sistema profesional para análisis de riesgo financiero y gestión de portafolios con modelos avanzados (CAPM, GARCH, VaR, Markowitz).
 
 ## 🚀 **Instrucciones de Uso**
 
