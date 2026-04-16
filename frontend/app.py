@@ -935,25 +935,49 @@ if st.session_state.data_loaded:
                 price = signal_info['price']
                 confidence = signal_info.get('confidence', 0)
                 
+                # Mostrar señal actual
                 if signal_type == 'BUY':
                     fig_signals.add_trace(go.Scatter(
                         x=[prices.index[-1]],
                         y=[price],
                         mode='markers',
-                        name=f'Señal de Compra (Confianza: {confidence:.2f})',
-                        marker=dict(color='green', symbol='triangle-up', size=15)
+                        name=f'Señal de COMPRA (Confianza: {confidence:.2f})',
+                        marker=dict(color='green', symbol='triangle-up', size=20)
                     ))
                 elif signal_type == 'SELL':
                     fig_signals.add_trace(go.Scatter(
                         x=[prices.index[-1]],
                         y=[price],
                         mode='markers',
-                        name=f'Señal de Venta (Confianza: {confidence:.2f})',
-                        marker=dict(color='red', symbol='triangle-down', size=15)
+                        name=f'Señal de VENTA (Confianza: {confidence:.2f})',
+                        marker=dict(color='red', symbol='triangle-down', size=20)
                     ))
-                else:
-                    # Para señales HOLD, no mostrar marcador
-                    pass
+                elif signal_type == 'HOLD':
+                    fig_signals.add_trace(go.Scatter(
+                        x=[prices.index[-1]],
+                        y=[price],
+                        mode='markers',
+                        name=f'Señal NEUTRAL (Confianza: {confidence:.2f})',
+                        marker=dict(color='yellow', symbol='circle', size=15)
+                    ))
+                
+                # Añadir anotación de la señal
+                fig_signals.add_annotation(
+                    x=prices.index[-1],
+                    y=price,
+                    text=f"{signal_type}<br>Confianza: {confidence:.2f}",
+                    showarrow=True,
+                    arrowhead=2,
+                    arrowsize=1,
+                    arrowwidth=2,
+                    arrowcolor="black",
+                    ax=40,
+                    ay=-40,
+                    bgcolor="white",
+                    bordercolor="black",
+                    borderwidth=2,
+                    font=dict(size=12, color="black")
+                )
                 
                 fig_signals.update_layout(
                     title=f'Señales de Trading - {selected_signal_asset}',
