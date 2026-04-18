@@ -593,10 +593,14 @@ if st.session_state.data_loaded:
                             line=dict(color='#4A90B8', width=3)
                         ))
                         
-                        # Medias móviles
+                        # Calcular SMAs históricas completas (no solo valor actual)
+                        sma_20 = prices[selected_symbol].rolling(window=20).mean()
+                        sma_50 = prices[selected_symbol].rolling(window=50).mean()
+                        
+                        # Medias móviles como series temporales
                         fig.add_trace(go.Scatter(
                             x=prices.index,
-                            y=[indicators['sma_short']] * len(prices),
+                            y=sma_20,  # Serie temporal completa
                             mode='lines',
                             name='SMA 20 (Corta)',
                             line=dict(color='#F39C12', width=2)
@@ -604,7 +608,7 @@ if st.session_state.data_loaded:
                         
                         fig.add_trace(go.Scatter(
                             x=prices.index,
-                            y=[indicators['sma_long']] * len(prices),
+                            y=sma_50,  # Serie temporal completa
                             mode='lines',
                             name='SMA 50 (Larga)',
                             line=dict(color='#E74C3C', width=2)
