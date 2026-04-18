@@ -1,5 +1,5 @@
 """
-Frontend Streamlit - Dashboard de Riesgo Financiero
+Frontend Streamlit - Dashboard de Riesgo Financiero Profesional
 Consume el Backend FastAPI
 """
 
@@ -15,7 +15,7 @@ import json
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Dashboard de Riesgo Financiero",
+    page_title="Dashboard de Riesgo Financiero - Sistema Profesional",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -24,252 +24,349 @@ st.set_page_config(
 # Configuración de API
 API_BASE_URL = "http://localhost:8000"
 
-# CSS personalizado - Diseño profesional claro y moderno
+# CSS personalizado - Diseño profesional avanzado
 st.markdown("""
 <style>
-    /* Colores representativos de las acciones */
+    /* Colores corporativos profesionales */
     :root {
-        --apple-color: #007AFF;
-        --microsoft-color: #00A4EF;
-        --exxon-color: #FF6B00;
-        --cocacola-color: #F40009;
-        --spy-color: #2E7D32;
-        --primary-blue: #3B82F6;
-        --primary-green: #10B981;
-        --primary-orange: #F59E0B;
-        --primary-red: #EF4444;
-        --bg-light: #F8FAFC;
-        --bg-white: #FFFFFF;
-        --text-dark: #1E293B;
-        --text-gray: #64748B;
-        --border-color: #E2E8F0;
+        --primary-dark: #1E3A5F;
+        --primary-blue: #2E6B9E;
+        --primary-light: #4A90B8;
+        --accent-green: #2ECC71;
+        --accent-red: #E74C3C;
+        --accent-orange: #F39C12;
+        --bg-dark: #0F1B28;
+        --bg-medium: #1A2738;
+        --bg-light: #2C3E50;
+        --text-primary: #FFFFFF;
+        --text-secondary: #BDC3C7;
+        --text-muted: #7F8C8D;
+        --border-color: #34495E;
+        --card-bg: linear-gradient(135deg, #1A2738 0%, #2C3E50 100%);
     }
     
-    /* Encabezado principal - Estilo Moderno */
+    /* Encabezado principal - Estilo Trading/Financiero */
     .main-header {
-        font-size: 3.5rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #1E293B 0%, #334155 50%, #1E293B 100%);
+        font-size: 2.8rem;
+        font-weight: 900;
+        color: #FFFFFF;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        letter-spacing: -0.5px;
+        border-bottom: 3px solid #4A90B8;
+        padding-bottom: 1rem;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: linear-gradient(135deg, #1A2738 0%, #2C3E50 100%);
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        border: 2px solid #4A90B8;
+        box-shadow: 0 8px 25px rgba(74, 144, 184, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .main-header::before {
+        content: "📈";
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 3rem;
+        opacity: 0.8;
+    }
+    
+    .main-header::after {
+        content: "📊";
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 3rem;
+        opacity: 0.8;
+    }
+    
+    .header-title {
+        background: linear-gradient(135deg, #4A90B8 0%, #2ECC71 50%, #4A90B8 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-align: center;
-        margin-bottom: 2rem;
-        text-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        letter-spacing: -1px;
-        border-bottom: 4px solid #3B82F6;
-        padding-bottom: 1rem;
+        background-clip: text;
+        font-size: 2.5rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 0;
+        padding: 0 3rem;
+    }
+    
+    .header-subtitle {
+        color: #BDC3C7;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+        font-weight: 400;
+        letter-spacing: 1px;
     }
     
     /* Subtítulo de secciones - Estilo Profesional */
     .sub-header {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #4A90B8;
         margin-top: 2rem;
         margin-bottom: 1.5rem;
-        border-bottom: 3px solid #3B82F6;
-        padding-bottom: 0.5rem;
+        border-left: 5px solid #4A90B8;
+        padding-left: 1rem;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        letter-spacing: 1px;
     }
     
-    /* Sidebar profesional - Estilo Claro */
+    /* Sidebar profesional - Estilo Terminal */
     .css-1d391kg {
-        background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%) !important;
-        border-right: 2px solid #E2E8F0;
-        box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        background: linear-gradient(180deg, #0F1B28 0%, #1A2738 100%) !important;
+        border-right: 2px solid #34495E;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.3);
     }
     
     /* Títulos de sidebar */
     .css-1oe59io {
-        color: #1E293B !important;
+        color: #4A90B8 !important;
         font-weight: 700;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         text-transform: uppercase;
         letter-spacing: 1px;
     }
     
     /* Métricas con estilo profesional */
     .metric-card {
-        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+        background: var(--card-bg);
         padding: 1.5rem;
         border-radius: 12px;
-        border-left: 5px solid #3B82F6;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-left: 5px solid #4A90B8;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         transition: all 0.3s ease;
-        color: #1E293B;
-        border: 1px solid #E2E8F0;
+        color: #FFFFFF;
+        border: 1px solid #34495E;
     }
     
     .metric-card:hover {
         transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        box-shadow: 0 8px 25px rgba(74, 144, 184, 0.3);
+        border-color: #4A90B8;
     }
     
     /* Texto positivo y negativo */
     .positive {
-        color: #10B981 !important;
+        color: #2ECC71 !important;
         font-weight: 800;
         font-size: 1.2rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     
     .negative {
-        color: #EF4444 !important;
+        color: #E74C3C !important;
         font-weight: 800;
         font-size: 1.2rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     
     /* Botones profesionales */
     .stButton > button {
-        background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%) !important;
+        background: linear-gradient(135deg, #4A90B8 0%, #2E6B9E 100%) !important;
         color: white !important;
         border: none !important;
-        border-radius: 10px !important;
-        padding: 1rem 2rem !important;
+        border-radius: 8px !important;
+        padding: 0.8rem 1.5rem !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 1px !important;
         transition: all 0.3s ease !important;
-        box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4) !important;
-        border: 2px solid transparent;
+        box-shadow: 0 4px 15px rgba(74, 144, 184, 0.4) !important;
+        font-size: 0.9rem !important;
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #2563EB 0%, #059669 100%) !important;
-        transform: translateY(-3px) !important;
-        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.6) !important;
-        border-color: #3B82F6;
+        background: linear-gradient(135deg, #5BA0C8 0%, #3E7BAE 100%) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(74, 144, 184, 0.6) !important;
     }
     
     /* Tabs con estilo profesional */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 24px;
-        background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+        gap: 16px;
+        background: linear-gradient(180deg, #1A2738 0%, #0F1B28 100%);
         padding: 1rem;
         border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        border: 1px solid #34495E;
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 100%);
-        border-radius: 10px 10px 0 0;
-        padding: 1.2rem 2.5rem;
-        font-weight: 700;
-        color: #1E293B;
-        border-bottom: 3px solid transparent;
+        background: linear-gradient(135deg, #2C3E50 0%, #1A2738 100%);
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        color: #BDC3C7;
+        border: 1px solid #34495E;
         transition: all 0.3s ease;
         text-transform: uppercase;
-        letter-spacing: 1px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        border: 1px solid #E2E8F0;
+        letter-spacing: 0.5px;
+        font-size: 0.85rem;
     }
     
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
-        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
-        color: #1E293B;
-        border-bottom: 3px solid #3B82F6;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        background: linear-gradient(135deg, #4A90B8 0%, #2E6B9E 100%);
+        color: #FFFFFF;
+        border-color: #4A90B8;
+        box-shadow: 0 4px 15px rgba(74, 144, 184, 0.4);
     }
     
     /* Contenedores de contenido */
     .stContainer {
-        background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+        background: var(--card-bg);
         border-radius: 16px;
-        padding: 2.5rem;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         margin-bottom: 2rem;
-        border: 1px solid #E2E8F0;
+        border: 1px solid #34495E;
     }
     
     /* DataFrames con estilo profesional */
     .stDataFrame {
         border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        border: 1px solid #E2E8F0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        border: 1px solid #34495E;
     }
     
     /* Gráficos con borde profesional */
     .js-plotly-plot .plotly .plot-container {
         border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        border: 1px solid #E2E8F0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        border: 1px solid #34495E;
+        background: #1A2738;
     }
     
     /* Texto de alerta profesional */
     .stAlert {
         border-radius: 12px;
-        border-left: 5px solid #3B82F6;
-        background: linear-gradient(135deg, #EFF6FF 0%, #E0F2FE 100%);
-        color: #1E293B;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-left: 5px solid #4A90B8;
+        background: linear-gradient(135deg, #1A2738 0%, #2C3E50 100%);
+        color: #BDC3C7;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        border: 1px solid #34495E;
     }
     
     /* Footer discreto */
     .footer {
         text-align: center;
-        color: #64748B;
-        font-size: 0.9rem;
+        color: #7F8C8D;
+        font-size: 0.85rem;
         margin-top: 3rem;
         padding: 2rem;
-        border-top: 2px solid #E2E8F0;
-        background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+        border-top: 1px solid #34495E;
+        background: linear-gradient(180deg, #0F1B28 0%, #1A2738 100%);
     }
     
-    /* Estilos específicos para cada acción */
-    .apple-metric { color: var(--apple-color); font-weight: 800; }
-    .microsoft-metric { color: var(--microsoft-color); font-weight: 800; }
-    .exxon-metric { color: var(--exxon-color); font-weight: 800; }
-    .cocacola-metric { color: var(--cocacola-color); font-weight: 800; }
-    .spy-metric { color: var(--spy-color); font-weight: 800; }
-    
-    /* Animaciones de carga */
-    .loading-spinner {
-        animation: pulse 1.5s infinite;
+    /* Tarjetas de interpretación */
+    .insight-card {
+        background: linear-gradient(135deg, #1A2738 0%, #2C3E50 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border: 1px solid #34495E;
+        border-left: 4px solid #4A90B8;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
     
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.5; }
-        100% { opacity: 1; }
+    .insight-card h4 {
+        color: #4A90B8;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
     }
     
-    /* Estilo de cards de análisis */
-    .analysis-card {
-        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        border: 1px solid #E2E8F0;
-        transition: all 0.3s ease;
-        margin-bottom: 2rem;
+    .insight-card p {
+        color: #BDC3C7;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
     }
     
-    .analysis-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    .insight-card strong {
+        color: #FFFFFF;
+    }
+    
+    /* Métricas destacadas */
+    .highlight-metric {
+        background: linear-gradient(135deg, #4A90B8 0%, #2E6B9E 100%);
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        margin: 0.5rem 0;
+        box-shadow: 0 4px 15px rgba(74, 144, 184, 0.3);
+    }
+    
+    .highlight-metric .value {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #FFFFFF;
+    }
+    
+    .highlight-metric .label {
+        font-size: 0.9rem;
+        color: #E0E0E0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    /* Indicadores de estado */
+    .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        margin: 0.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .status-buy {
+        background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+        color: white;
+        box-shadow: 0 2px 10px rgba(46, 204, 113, 0.3);
+    }
+    
+    .status-sell {
+        background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+        color: white;
+        box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+    }
+    
+    .status-hold {
+        background: linear-gradient(135deg, #F39C12 0%, #E67E22 100%);
+        color: white;
+        box-shadow: 0 2px 10px rgba(243, 156, 18, 0.3);
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Título principal
-st.markdown('<div class="main-header">📈 Sistema de Gestión de Portafolio</div>', unsafe_allow_html=True)
+# Título principal - Estilo Trading/Financiero
+st.markdown("""
+<div class="main-header">
+    <h1 class="header-title">SISTEMA PROFESIONAL DE GESTIÓN DE PORTAFOLIO</h1>
+    <p class="header-subtitle">Análisis Avanzado de Riesgo Financiero y Optimización de Portafolios</p>
+</div>
+""", unsafe_allow_html=True)
 
 # Sidebar
-st.sidebar.markdown("## 📈 Configuración")
+st.sidebar.markdown("## ⚙️ CONFIGURACIÓN DEL SISTEMA")
 st.sidebar.markdown("---")
 
 # Selección de activos
 assets = ['AAPL', 'MSFT', 'XOM', 'KO', 'SPY']
 selected_assets = st.sidebar.multiselect(
-    "Seleccionar Activos",
+    "📈 ACTIVOS DEL PORTAFOLIO",
     options=assets,
-    default=assets
+    default=assets,
+    help="Seleccione las acciones que desea incluir en el análisis"
 )
 
 # Período de análisis
@@ -280,22 +377,24 @@ period_options = {
     "5 años": 1825
 }
 selected_period = st.sidebar.selectbox(
-    "Período de Análisis",
+    "📅 PERÍODO DE ANÁLISIS",
     options=list(period_options.keys()),
-    index=2
+    index=2,
+    help="Seleccione el horizonte temporal para el análisis"
 )
 
 # Nivel de confianza para VaR
 confidence_level = st.sidebar.slider(
-    "Nivel de Confianza para VaR",
+    "⚠️ NIVEL DE CONFIANZA (VaR)",
     min_value=0.01,
     max_value=0.10,
     value=0.05,
-    step=0.01
+    step=0.01,
+    help="Nivel de significancia para el cálculo del Value at Risk"
 )
 
 # Botón para cargar datos
-if st.sidebar.button("🔄 Cargar Datos"):
+if st.sidebar.button("🔄 ACTUALIZAR DATOS"):
     st.session_state.data_loaded = False
 
 # Estado de carga de datos
@@ -319,25 +418,25 @@ def call_api(endpoint, data=None, timeout=30):
             try:
                 return response.json()
             except ValueError as e:
-                st.error(f"Error decodificando respuesta JSON: {str(e)}")
+                st.error(f"❌ Error decodificando respuesta JSON: {str(e)}")
                 return None
         else:
-            st.error(f"Error en API ({response.status_code}): {response.text[:200]}")
+            st.error(f"❌ Error en API ({response.status_code}): {response.text[:200]}")
             return None
             
     except requests.exceptions.Timeout:
-        st.error(f"Timeout: La API no respondió en {timeout} segundos")
+        st.error(f"⏰ Timeout: La API no respondió en {timeout} segundos")
         return None
     except requests.exceptions.ConnectionError:
-        st.error("Error de conexión: No se pudo conectar con la API. ¿Está el backend corriendo?")
+        st.error("🔌 Error de conexión: No se pudo conectar con la API. ¿Está el backend corriendo?")
         return None
     except Exception as e:
-        st.error(f"Error inesperado: {str(e)}")
+        st.error(f"💥 Error inesperado: {str(e)}")
         return None
 
 # Carga de datos
 if not st.session_state.data_loaded:
-    with st.spinner('Cargando datos financieros desde la API...'):
+    with st.spinner('📡 Conectando con el servidor de datos...'):
         try:
             data_request = {
                 "assets": selected_assets,
@@ -360,9 +459,9 @@ if not st.session_state.data_loaded:
                 st.session_state.prices = prices
                 st.session_state.returns = returns
                 st.session_state.data_loaded = True
-                st.success("✅ Datos cargados exitosamente desde la API!")
+                st.success("✅ Datos cargados exitosamente desde el servidor")
             else:
-                st.error("❌ No se pudieron cargar los datos desde la API")
+                st.error("❌ No se pudieron cargar los datos desde el servidor")
         except Exception as e:
             st.error(f"❌ Error al cargar datos: {str(e)}")
 
@@ -376,56 +475,64 @@ if st.session_state.data_loaded:
         prices = prices[selected_assets]
         returns = returns[selected_assets]
     
-    # Resumen general
-    st.markdown('<div class="sub-header">📈 Resumen General</div>', unsafe_allow_html=True)
+    # Resumen ejecutivo
+    st.markdown('<div class="sub-header">📋 RESUMEN EJECUTIVO</div>', unsafe_allow_html=True)
     
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.metric(
-            label="📈 Número de Activos",
-            value=len(returns.columns)
-        )
+        st.markdown("""
+        <div class="metric-card">
+            <div style="font-size: 2rem; font-weight: 900; color: #4A90B8;">{}</div>
+            <div style="color: #BDC3C7; text-transform: uppercase; font-size: 0.9rem;">Activos Analizados</div>
+        </div>
+        """.format(len(returns.columns)), unsafe_allow_html=True)
     
     with col2:
-        st.metric(
-            label="📅 Días de Datos",
-            value=len(returns)
-        )
+        st.markdown("""
+        <div class="metric-card">
+            <div style="font-size: 2rem; font-weight: 900; color: #2ECC71;">{}</div>
+            <div style="color: #BDC3C7; text-transform: uppercase; font-size: 0.9rem;">Días de Datos</div>
+        </div>
+        """.format(len(returns)), unsafe_allow_html=True)
     
     with col3:
-        st.metric(
-            label="📅 Fecha Inicio",
-            value=prices.index[0].strftime('%Y-%m-%d')
-        )
+        st.markdown("""
+        <div class="metric-card">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #F39C12;">{}</div>
+            <div style="color: #BDC3C7; text-transform: uppercase; font-size: 0.9rem;">Fecha Inicio</div>
+        </div>
+        """.format(prices.index[0].strftime('%Y-%m-%d')), unsafe_allow_html=True)
     
     with col4:
-        st.metric(
-            label="📅 Fecha Fin",
-            value=prices.index[-1].strftime('%Y-%m-%d')
-        )
+        st.markdown("""
+        <div class="metric-card">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #E74C3C;">{}</div>
+            <div style="color: #BDC3C7; text-transform: uppercase; font-size: 0.9rem;">Fecha Fin</div>
+        </div>
+        """.format(prices.index[-1].strftime('%Y-%m-%d')), unsafe_allow_html=True)
     
     # Pestañas del dashboard
     tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
-        "🔍 Análisis Técnico",
-        "📊 Rendimientos", 
-        "📈 Volatilidad",
+        "🔍 ANÁLISIS TÉCNICO",
+        "📊 RENDIMIENTOS", 
+        "📈 VOLATILIDAD",
         "🎯 CAPM",
-        "⚠️ VaR & CVaR",
-        "⚖️ Markowitz",
-        "🎯 Señales",
-        "🏆 Benchmark"
+        "⚠️ RIESGO (VaR/CVaR)",
+        "⚖️ MARKOWITZ",
+        "🎯 SEÑALES",
+        "🏆 BENCHMARK"
     ])
     
     # 1. Análisis Técnico
     with tab1:
-        st.markdown('<div class="sub-header">🔍 Análisis Técnico</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sub-header">🔍 ANÁLISIS TÉCNICO PROFESIONAL</div>', unsafe_allow_html=True)
         
         # Selección de activo
-        selected_symbol = st.selectbox("Seleccionar Activo", options=prices.columns, key="tech_symbol")
+        selected_symbol = st.selectbox("🎯 SELECCIONAR ACTIVO", options=prices.columns, key="tech_symbol")
         
         if selected_symbol:
-            with st.spinner('Calculando indicadores técnicos...'):
+            with st.spinner('📊 Calculando indicadores técnicos...'):
                 # Llamar a API para análisis técnico
                 tech_request = {
                     "symbol": selected_symbol,
@@ -439,17 +546,40 @@ if st.session_state.data_loaded:
                 if tech_response and tech_response.get("success"):
                     indicators = tech_response["data"]
                     
-                    col1, col2 = st.columns(2)
+                    # Columna izquierda - Gráfico de precios
+                    col1, col2 = st.columns([2, 1])
+                    
+                    # Mapeo de nombres completos de activos
+                    asset_names = {
+                        'AAPL': 'Apple Inc.',
+                        'MSFT': 'Microsoft Corporation',
+                        'XOM': 'Exxon Mobil Corporation',
+                        'KO': 'The Coca-Cola Company',
+                        'SPY': 'S&P 500 ETF Trust'
+                    }
                     
                     with col1:
-                        # Interpretación de Medias Móviles
-                        st.markdown("### 📈 Medias Móviles (SMA)")
-                        st.info("""
-                        **SMA 20 (Corta)**: Promedio de precios de los últimos 20 días - reacciona rápido a cambios
-                        **SMA 50 (Larga)**: Promedio de precios de los últimos 50 días - muestra tendencia general
-                        **Cruce Alcista**: Cuando SMA 20 cruza por encima de SMA 50 → Señal de COMPRA
-                        **Cruce Bajista**: Cuando SMA 20 cruza por debajo de SMA 50 → Señal de VENTA
-                        """)
+                        st.markdown("### 📈 EVOLUCIÓN DE PRECIOS Y MEDIAS MÓVILES")
+                        
+                        # Mostrar nombre completo del activo
+                        st.markdown(f"""
+                        <div class="highlight-metric" style="margin-bottom: 1rem;">
+                            <div class="value">{selected_symbol}</div>
+                            <div class="label">{asset_names.get(selected_symbol, selected_symbol)}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        # Interpretación humanizada
+                        st.markdown("""
+                        <div class="insight-card">
+                            <h4>💡 ¿QUÉ NOS DICEN LAS MEDIAS MÓVILES?</h4>
+                            <p><strong>Imagine las medias móviles como el "promedio móvil" del precio:</strong></p>
+                            <p>• <strong>SMA 20 (línea naranja):</strong> Es como el "promedio del último mes" - reacciona rápido a los cambios del mercado</p>
+                            <p>• <strong>SMA 50 (línea roja):</strong> Es como el "promedio de los últimos 2 meses" - muestra la tendencia general</p>
+                            <p>• <strong>Señal de COMPRA:</strong> Cuando la línea naranja cruza POR ENCIMA de la roja → ¡El precio está subiendo!</p>
+                            <p>• <strong>Señal de VENTA:</strong> Cuando la línea naranja cruza POR DEBAJO de la roja → ¡El precio está bajando!</p>
+                        </div>
+                        """, unsafe_allow_html=True)
                         
                         # Gráfico de precios con indicadores
                         fig = go.Figure()
@@ -460,7 +590,7 @@ if st.session_state.data_loaded:
                             y=prices[selected_symbol],
                             mode='lines',
                             name=f'{selected_symbol} Precio',
-                            line=dict(color='#2E86AB', width=2)
+                            line=dict(color='#4A90B8', width=3)
                         ))
                         
                         # Medias móviles
@@ -468,37 +598,45 @@ if st.session_state.data_loaded:
                             x=prices.index,
                             y=[indicators['sma_short']] * len(prices),
                             mode='lines',
-                            name='SMA 20',
-                            line=dict(color='orange', width=1)
+                            name='SMA 20 (Corta)',
+                            line=dict(color='#F39C12', width=2)
                         ))
                         
                         fig.add_trace(go.Scatter(
                             x=prices.index,
                             y=[indicators['sma_long']] * len(prices),
                             mode='lines',
-                            name='SMA 50',
-                            line=dict(color='red', width=1)
+                            name='SMA 50 (Larga)',
+                            line=dict(color='#E74C3C', width=2)
                         ))
                         
                         fig.update_layout(
                             title=f'Análisis Técnico - {selected_symbol}',
                             xaxis_title='Fecha',
                             yaxis_title='Precio ($)',
-                            template='plotly_white',
-                            height=400
+                            template='plotly_dark',
+                            height=350,
+                            plot_bgcolor='#1A2738',
+                            paper_bgcolor='#1A2738',
+                            font=dict(color='#BDC3C7'),
+                            title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif')
                         )
                         
                         st.plotly_chart(fig, use_container_width=True)
                     
                     with col2:
-                        # Interpretación de RSI
-                        st.markdown("### 📊 RSI (Índice de Fuerza Relativa)")
-                        st.info("""
-                        **Rango**: 0 a 100
-                        **Sobrecompra (70-100)**: El activo está muy comprado, posible corrección a la baja
-                        **Sobreventa (0-30)**: El activo está muy vendido, posible rebote al alza
-                        **Zona Neutral (30-70)**: Tendencia estable, no hay señales extremas
-                        """)
+                        st.markdown("### 📊 RSI - ÍNDICE DE FUERZA RELATIVA")
+                        
+                        # Interpretación humanizada
+                        st.markdown("""
+                        <div class="insight-card">
+                            <h4>💡 ¿QUÉ NOS DICE EL RSI?</h4>
+                            <p><strong>El RSI es como un "termómetro" del mercado:</strong></p>
+                            <p>• <strong>RSI > 70 (Zona roja):</strong> ¡El activo está "caliente"! Demasiada gente lo compra → Posible corrección</p>
+                            <p>• <strong>RSI < 30 (Zona verde):</strong> ¡El activo está "frío"! Demasiada gente lo vende → Posible rebote</p>
+                            <p>• <strong>RSI 30-70 (Zona amarilla):</strong> Temperatura normal → Mercado estable</p>
+                        </div>
+                        """, unsafe_allow_html=True)
                         
                         # Calcular RSI histórico correctamente
                         close_prices = prices[selected_symbol]
@@ -515,125 +653,159 @@ if st.session_state.data_loaded:
                             y=rsi_values,
                             mode='lines',
                             name='RSI',
-                            line=dict(color='purple', width=2)
+                            line=dict(color='#9B59B6', width=2)
                         ))
                         
                         # Líneas de sobrecompra/sobreventa
-                        fig_rsi.add_hline(y=70, line_dash="dash", line_color="red", annotation_text="Sobrecompra")
-                        fig_rsi.add_hline(y=30, line_dash="dash", line_color="green", annotation_text="Sobreventa")
+                        fig_rsi.add_hline(y=70, line_dash="dash", line_color="#E74C3C", annotation_text="Sobrecompra (>70)")
+                        fig_rsi.add_hline(y=30, line_dash="dash", line_color="#2ECC71", annotation_text="Sobreventa (<30)")
                         
                         fig_rsi.update_layout(
-                            title='RSI (14)',
+                            title='RSI (14 días)',
                             xaxis_title='Fecha',
                             yaxis_title='RSI',
-                            template='plotly_white',
-                            height=400
+                            template='plotly_dark',
+                            height=350,
+                            plot_bgcolor='#1A2738',
+                            paper_bgcolor='#1A2738',
+                            font=dict(color='#BDC3C7'),
+                            title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif')
                         )
                         
                         st.plotly_chart(fig_rsi, use_container_width=True)
                     
                     # Señales actuales
+                    st.markdown("### 🎯 SEÑALES ACTUALES DEL MERCADO")
+                    
                     col1, col2, col3 = st.columns(3)
                     
                     with col1:
                         if indicators['rsi'] < 30:
-                            st.success(f"🟢 RSI: {indicators['rsi']:.2f} - Señal de COMPRA (Sobreventa)")
+                            st.markdown("""
+                            <div class="status-indicator status-buy">
+                                🟢 RSI: {:.2f} - ¡OPORTUNIDAD DE COMPRA!
+                            </div>
+                            <p style="color: #BDC3C7; font-size: 0.9rem;">El activo está sobrevendido - Posible rebote al alza</p>
+                            """.format(indicators['rsi']), unsafe_allow_html=True)
                         elif indicators['rsi'] > 70:
-                            st.error(f"🔴 RSI: {indicators['rsi']:.2f} - Señal de VENTA (Sobrecompra)")
+                            st.markdown("""
+                            <div class="status-indicator status-sell">
+                                🔴 RSI: {:.2f} - ¡PELIGRO DE SOBRECOMPRA!
+                            </div>
+                            <p style="color: #BDC3C7; font-size: 0.9rem;">El activo está sobrecomprado - Posible corrección</p>
+                            """.format(indicators['rsi']), unsafe_allow_html=True)
                         else:
-                            st.warning(f"🟡 RSI: {indicators['rsi']:.2f} - Señal NEUTRAL")
+                            st.markdown("""
+                            <div class="status-indicator status-hold">
+                                🟡 RSI: {:.2f} - ZONA NEUTRAL
+                            </div>
+                            <p style="color: #BDC3C7; font-size: 0.9rem;">El activo está en rango normal - Esperar señal clara</p>
+                            """.format(indicators['rsi']), unsafe_allow_html=True)
                     
                     with col2:
                         if indicators['sma_short'] > indicators['sma_long']:
-                            st.success("🟢 SMA: Señal de COMPRA (Tendencia alcista)")
+                            st.markdown("""
+                            <div class="status-indicator status-buy">
+                                🟢 TENDENCIA ALCISTA
+                            </div>
+                            <p style="color: #BDC3C7; font-size: 0.9rem;">SMA 20 > SMA 50 - El precio está en tendencia positiva</p>
+                            """, unsafe_allow_html=True)
                         else:
-                            st.error("🔴 SMA: Señal de VENTA (Tendencia bajista)")
+                            st.markdown("""
+                            <div class="status-indicator status-sell">
+                                🔴 TENDENCIA BAJISTA
+                            </div>
+                            <p style="color: #BDC3C7; font-size: 0.9rem;">SMA 20 < SMA 50 - El precio está en tendencia negativa</p>
+                            """, unsafe_allow_html=True)
                     
                     with col3:
                         # Obtener precio actual
                         current_price = prices[selected_symbol].iloc[-1]
-                        st.metric(f"Precio Actual - {selected_symbol}", f"${current_price:.2f}")
+                        st.markdown(f"""
+                        <div class="highlight-metric">
+                            <div class="value">${current_price:.2f}</div>
+                            <div class="label">PRECIO ACTUAL</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     
-                    # Recomendación
-                    st.markdown(f"### 🎯 Recomendación: {indicators['recommendation']}")
+                    # Recomendación final
+                    st.markdown(f"""
+                    <div class="insight-card" style="border-left-color: {'#2ECC71' if indicators['recommendation'] == 'BUY' else '#E74C3C' if indicators['recommendation'] == 'SELL' else '#F39C12'};">
+                        <h4>🎯 RECOMENDACIÓN DEL SISTEMA: {indicators['recommendation']}</h4>
+                        <p><strong>Basado en el análisis técnico combinado (SMA + RSI), el sistema recomienda:</strong></p>
+                        <p>Esta recomendación considera tanto la tendencia del precio (medias móviles) como el momento del mercado (RSI) para proporcionar una señal más confiable.</p>
+                    </div>
+                    """, unsafe_allow_html=True)
     
     # 2. Análisis de Rendimientos
     with tab2:
-        st.markdown('<div class="sub-header">📊 Análisis de Rendimientos</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sub-header">📊 ANÁLISIS DE RENDIMIENTOS</div>', unsafe_allow_html=True)
         
-        st.info("""
-        📖 **Interpretación Profesional de Rendimientos:**
-        
-        **📊 Estadísticas Descriptivas:**
-        - **Media (Mean)**: Retorno promedio diario. Valores positivos indican ganancia promedio, negativos indican pérdida
-        - **Desviación Estándar (Std)**: Mide la volatilidad/riesgo. Mayor desviación = mayor incertidumbre
-        - **Mínimo y Máximo**: Los extremos muestran los peores y mejores días de trading
-        - **Ejemplo**: Si media = 0.001 (0.1% diario) y std = 0.02 (2%), el activo gana 0.1% promedio pero con fluctuaciones de ±2%
-        
-        **📈 Distribución de Retornos:**
-        - **Forma de la curva**: Una distribución normal (campana) indica comportamiento estable
-        - **Colas anchas**: Mayor probabilidad de eventos extremos (ganancias/pérdidas grandes)
-        - **Sesgo**: Si la curva se inclina a la derecha = más ganancias extremas; a la izquierda = más pérdidas extremas
-        
-        **🔗 Matriz de Correlación:**
-        - **Rango**: -1 a +1
-        - **+1**: Los activos se mueven perfectamente en la misma dirección
-        - **0**: No hay relación entre los movimientos
-        - **-1**: Los activos se mueven en direcciones opuestas (ideal para diversificación)
-        - **Ejemplo práctico**: Si AAPL y MSFT tienen correlación 0.8, cuando AAPL sube 1%, MSFT tiende a subir 0.8%
-        - **Diversificación**: Buscar activos con correlación baja o negativa reduce el riesgo del portafolio
-        """)
+        st.markdown("""
+        <div class="insight-card">
+            <h4>💡 ¿CÓMO INTERPRETAR LOS RENDIMIENTOS?</h4>
+            <p><strong>Los rendimientos nos dicen cuánto gana o pierde un activo día a día:</strong></p>
+            <p>• <strong>Media (Mean):</strong> Es el "promedio diario" de ganancias/pérdidas. Si es 0.001, significa 0.1% diario promedio</p>
+            <p>• <strong>Desviación Estándar (Std):</strong> Mide qué tan "volátil" es el activo. Mayor número = más incertidumbre</p>
+            <p>• <strong>Mínimo y Máximo:</strong> Los peores y mejores días que ha tenido el activo en el período analizado</p>
+            <p><strong>Ejemplo práctico:</strong> Si un activo tiene media 0.001 (0.1% diario) y std 0.02 (2%), gana 0.1% promedio pero con fluctuaciones de ±2% diario</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Estadísticas básicas
         col1, col2 = st.columns(2)
         
         with col1:
-            # Interpretación de Estadísticas Descriptivas
-            st.markdown("### 📊 Estadísticas Descriptivas")
-            st.info("""
-            **Media (Mean)**: Retorno promedio diario. Valores positivos indican ganancia promedio, negativos indican pérdida
-            **Desviación Estándar (Std)**: Mide la volatilidad/riesgo. Mayor desviación = mayor incertidumbre
-            **Mínimo y Máximo**: Los extremos muestran los peores y mejores días de trading
-            **Ejemplo**: Si media = 0.001 (0.1% diario) y std = 0.02 (2%), el activo gana 0.1% promedio pero con fluctuaciones de ±2%
-            """)
+            st.markdown("### 📊 ESTADÍSTICAS DESCRIPTIVAS")
             
             # Tabla de estadísticas
             basic_stats = returns.describe().T
-            st.dataframe(basic_stats[['mean', 'std', 'min', 'max']].round(4))
+            st.dataframe(basic_stats[['mean', 'std', 'min', 'max']].round(4), use_container_width=True)
         
         with col2:
-            # Interpretación de Distribución de Retornos
-            st.markdown("### 📈 Distribución de Retornos")
-            st.info("""
-            **Forma de la curva**: Una distribución normal (campana) indica comportamiento estable
-            **Colas anchas**: Mayor probabilidad de eventos extremos (ganancias/pérdidas grandes)
-            **Sesgo**: Si la curva se inclina a la derecha = más ganancias extremas; a la izquierda = más pérdidas extremas
-            """)
+            st.markdown("### 📈 DISTRIBUCIÓN DE RENDIMIENTOS")
             
             # Distribución de rendimientos
-            selected_asset_ret = st.selectbox("Seleccionar Activo para Distribución", options=returns.columns, key="dist_symbol")
+            selected_asset_ret = st.selectbox("Seleccionar Activo", options=returns.columns, key="dist_symbol")
             
             fig = go.Figure()
             fig.add_trace(go.Histogram(
                 x=returns[selected_asset_ret],
                 nbinsx=50,
                 name=f'Retornos {selected_asset_ret}',
-                opacity=0.7,
-                marker_color='#2E86AB'
+                opacity=0.8,
+                marker_color='#4A90B8'
             ))
             
             fig.update_layout(
                 title=f'Distribución de Retornos - {selected_asset_ret}',
-                xaxis_title='Retorno',
+                xaxis_title='Retorno Diario',
                 yaxis_title='Frecuencia',
-                template='plotly_white',
-                height=400
+                template='plotly_dark',
+                height=350,
+                plot_bgcolor='#1A2738',
+                paper_bgcolor='#1A2738',
+                font=dict(color='#BDC3C7'),
+                title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif')
             )
             
             st.plotly_chart(fig, use_container_width=True)
         
         # Correlación
-        st.markdown("### 🔗 Matriz de Correlación")
+        st.markdown("### 🔗 MATRIZ DE CORRELACIÓN - ¿CÓMO SE MUEVEN LOS ACTIVOS JUNTOS?")
+        
+        st.markdown("""
+        <div class="insight-card">
+            <h4>💡 ¿QUÉ NOS DICE LA CORRELACIÓN?</h4>
+            <p><strong>La correlación mide cómo se mueven los activos entre sí:</strong></p>
+            <p>• <strong>Correlación +1 (Rojo intenso):</strong> Los activos se mueven IDÉNTICAMENTE - Si uno sube 1%, el otro también</p>
+            <p>• <strong>Correlación 0 (Blanco):</strong> No hay relación - Los movimientos son independientes</p>
+            <p>• <strong>Correlación -1 (Azul intenso):</strong> Los activos se mueven EN DIRECCIONES OPUESTAS - Ideal para diversificar</p>
+            <p><strong>Ejemplo práctico:</strong> Si AAPL y MSFT tienen correlación 0.8, cuando AAPL sube 1%, MSFT tiende a subir 0.8%</p>
+            <p><strong>Para diversificar:</strong> Busque activos con correlación baja o negativa para reducir el riesgo del portafolio</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         correlation = returns.corr()
         
         fig = go.Figure(data=go.Heatmap(
@@ -645,47 +817,36 @@ if st.session_state.data_loaded:
             zmax=1,
             text=correlation.round(2).values,
             texttemplate="%{text}",
-            textfont={"size": 12},
+            textfont={"size": 12, "color": "white"},
             hoverongaps=False
         ))
         
         fig.update_layout(
             title='Correlación entre Activos',
-            template='plotly_white',
-            height=500
+            template='plotly_dark',
+            height=400,
+            plot_bgcolor='#1A2738',
+            paper_bgcolor='#1A2738',
+            font=dict(color='#BDC3C7'),
+            title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif')
         )
         
         st.plotly_chart(fig, use_container_width=True)
     
     # 3. Análisis de Volatilidad
     with tab3:
-        st.markdown('<div class="sub-header">📈 Análisis de Volatilidad</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sub-header">📈 ANÁLISIS DE VOLATILIDAD Y RIESGO</div>', unsafe_allow_html=True)
         
-        st.info("""
-        📖 **Interpretación Profesional de Volatilidad:**
-        
-        **📊 Volatilidad Histórica:**
-        - **Definición**: Mide la variabilidad de los retornos de un activo en el tiempo
-        - **Cálculo**: Desviación estándar de los retornos anualizada (multiplicada por √252 días hábiles)
-        - **Interpretación**: 20% de volatilidad significa que el precio puede variar ±20% en un año
-        - **Ejemplo**: Si un activo tiene 30% de volatilidad vs otro con 15%, el primero es el doble de riesgoso
-        
-        **📈 Gráfico de Barras (Volatilidad por Activo):**
-        - **Comparación directa**: Permite ver qué activos son más riesgosos
-        - **Ordenamiento**: Los activos con barras más altas tienen mayor incertidumbre
-        - **Uso práctico**: Activos con baja volatilidad (10-15%) son más estables; alta volatilidad (30%+) son más especulativos
-        
-        **📊 Modelo GARCH (Volatilidad Futura):**
-        - **Propósito**: Predice la volatilidad futura basada en patrones históricos
-        - **Línea punteada**: Muestra la volatilidad esperada por el modelo GARCH
-        - **Picos de volatilidad**: Indican períodos de crisis o alta incertidumbre del mercado
-        - **Clusters**: La volatilidad tiende a agruparse - períodos tranquilos seguidos de períodos turbulentos
-        
-        **🎯 Aplicación Práctica:**
-        - **Gestión de riesgo**: Mayor volatilidad → reducir posición
-        - **Opciones financieras**: La volatilidad es clave para precios de opciones
-        - **Timing**: Comprar en períodos de baja volatilidad, ser cauteloso en alta volatilidad
-        """)
+        st.markdown("""
+        <div class="insight-card">
+            <h4>💡 ¿QUÉ ES LA VOLATILIDAD Y POR QUÉ IMPORTA?</h4>
+            <p><strong>La volatilidad es como el "nivel de incertidumbre" o "montaña rusa" del precio:</strong></p>
+            <p>• <strong>Alta volatilidad (30%+):</strong> Como una montaña rusa - Grandes subidas y bajadas - Mayor riesgo, mayor potencial de ganancia</p>
+            <p>• <strong>Baja volatilidad (10-15%):</strong> Como un paseo en bicicleta - Movimientos suaves - Menor riesgo, más estabilidad</p>
+            <p>• <strong>Interpretación práctica:</strong> 20% de volatilidad significa que el precio puede variar ±20% en un año</p>
+            <p>• <strong>GARCH:</strong> Es un modelo que "predice" la volatilidad futura basado en patrones pasados</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Volatilidad histórica
         volatility_data = {}
@@ -697,35 +858,32 @@ if st.session_state.data_loaded:
                 volatility_data[symbol] = vol_response["data"]["historical_volatility"]
         
         if volatility_data:
-            # Interpretación de Volatilidad Histórica
-            st.markdown("### 📊 Volatilidad Histórica")
-            st.info("""
-            **Definición**: Mide la variabilidad de los retornos de un activo en el tiempo
-            **Cálculo**: Desviación estándar de los retornos anualizada (multiplicada por √252 días hábiles)
-            **Interpretación**: 20% de volatilidad significa que el precio puede variar ±20% en un año
-            **Ejemplo**: Si un activo tiene 30% de volatilidad vs otro con 15%, el primero es el doble de riesgoso
-            """)
+            st.markdown("### 📊 VOLATILIDAD POR ACTIVO - ¿CUÁL ES MÁS RIESGOSO?")
             
             fig = go.Figure()
             fig.add_trace(go.Bar(
                 x=list(volatility_data.keys()),
                 y=list(volatility_data.values()),
                 name='Volatilidad Anualizada',
-                marker_color=['#1E88E5', '#43A047', '#FB8C00', '#E53935', '#6D4C41']
+                marker_color=['#4A90B8', '#2ECC71', '#F39C12', '#E74C3C', '#9B59B6']
             ))
             
             fig.update_layout(
                 title='Volatilidad Anualizada por Activo',
                 xaxis_title='Activo',
-                yaxis_title='Volatilidad',
-                template='plotly_white',
-                height=400
+                yaxis_title='Volatilidad (%)',
+                template='plotly_dark',
+                height=350,
+                plot_bgcolor='#1A2738',
+                paper_bgcolor='#1A2738',
+                font=dict(color='#BDC3C7'),
+                title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif')
             )
             
             st.plotly_chart(fig, use_container_width=True)
         
         # Volatilidad en el tiempo
-        selected_vol_asset = st.selectbox("Seleccionar Activo para Volatilidad Móvil", options=returns.columns, key="vol_symbol")
+        selected_vol_asset = st.selectbox("Seleccionar Activo para Ver Evolución", options=returns.columns, key="vol_symbol")
         
         if selected_vol_asset:
             with st.spinner('Calculando volatilidad...'):
@@ -735,67 +893,58 @@ if st.session_state.data_loaded:
                 if vol_response and vol_response.get("success"):
                     vol_data = vol_response["data"]
                     
+                    st.markdown(f"### 📈 EVOLUCIÓN DE VOLATILIDAD - {selected_vol_asset}")
+                    
                     fig_vol = go.Figure()
                     # Calcular volatilidad histórica móvil (30 días)
                     rolling_vol = returns[selected_vol_asset].rolling(window=30).std() * np.sqrt(252)
                     
-                    fig_vol = go.Figure()
                     fig_vol.add_trace(go.Scatter(
                         x=prices.index,
                         y=rolling_vol,
                         mode='lines',
                         name='Volatilidad Histórica (30 días)',
-                        line=dict(color='#2E86AB', width=2)
+                        line=dict(color='#4A90B8', width=2)
                     ))
                     
                     # Línea de volatilidad GARCH
                     fig_vol.add_hline(
                         y=vol_data["garch_volatility"],
                         line_dash="dash",
-                        line_color="#FF6B6B",
-                        annotation_text=f"GARCH: {vol_data['garch_volatility']:.4f}"
+                        line_color="#E74C3C",
+                        annotation_text=f"GARCH (Predicción): {vol_data['garch_volatility']:.4f}"
                     )
                     
                     fig_vol.update_layout(
                         title=f'Volatilidad Histórica - {selected_vol_asset}',
                         xaxis_title='Fecha',
                         yaxis_title='Volatilidad',
-                        template='plotly_white',
-                        height=400
+                        template='plotly_dark',
+                        height=350,
+                        plot_bgcolor='#1A2738',
+                        paper_bgcolor='#1A2738',
+                        font=dict(color='#BDC3C7'),
+                        title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif')
                     )
                     
                     st.plotly_chart(fig_vol, use_container_width=True)
     
     # 4. Análisis CAPM
     with tab4:
-        st.markdown('<div class="sub-header">🎯 Análisis CAPM</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sub-header">🎯 ANÁLISIS CAPM - RIESGO SISTEMÁTICO</div>', unsafe_allow_html=True)
         
-        st.info("""
-        📖 **Interpretación Profesional del CAPM:**
-        
-        **📊 Beta (β) - Riesgo Sistemático:**
-        - **β = 1**: El activo se mueve exactamente como el mercado (SPY)
-        - **β > 1**: El activo es más volátil que el mercado (amplifica movimientos)
-        - **β < 1**: El activo es menos volátil que el mercado (amortigua movimientos)
-        - **β negativo**: El activo se mueve en dirección opuesta al mercado (raro)
-        - **Ejemplo**: β = 1.5 significa que si el mercado sube 10%, el activo tiende a subir 15%
-        
-        **📈 Alpha (α) - Retorno Excedente:**
-        - **α > 0**: El activo supera al mercado (buen desempeño)
-        - **α < 0**: El activo bajo-performa vs el mercado (mal desempeño)
-        - **α = 0**: El activo se desempeña exactamente como predice su beta
-        - **Importancia**: Alpha positivo indica habilidad del gestor o ventajas competitivas
-        
-        **🎯 R-cuadrado (R²) - Calidad del Ajuste:**
-        - **R² = 1**: El 100% del movimiento del activo se explica por el mercado
-        - **R² bajo**: Otros factores además del mercado afectan al activo
-        - **Interpretación**: R² alto (>0.7) indica que beta es confiable; R² bajo sugiere que hay riesgos específicos del activo
-        
-        **📊 Clasificación de Riesgo:**
-        - **Defensivo (β < 0.8)**: Baja sensibilidad al mercado, estable en crisis
-        - **Moderado (0.8 < β < 1.2)**: Riesgo similar al mercado
-        - **Cíclico/Agresivo (β > 1.2)**: Alta sensibilidad, amplifica ganancias y pérdidas
-        """)
+        st.markdown("""
+        <div class="insight-card">
+            <h4>💡 ¿QUÉ ES EL CAPM Y PARA QUÉ SIRVE?</h4>
+            <p><strong>El CAPM nos ayuda a entender cuánto riesgo "del mercado" tiene un activo:</strong></p>
+            <p>• <strong>Beta (β):</strong> Mide qué tan "nervioso" es el activo comparado con el mercado (SPY)</p>
+            <p>  - β = 1: Se mueve IGUAL que el mercado</p>
+            <p>  - β > 1: Es MÁS nervioso - Amplifica los movimientos del mercado</p>
+            <p>  - β < 1: Es MENOS nervioso - Amortigua los movimientos del mercado</p>
+            <p>• <strong>Alpha (α):</strong> Mide el "valor agregado" - ¿El activo supera al mercado después de ajustar por riesgo?</p>
+            <p>• <strong>R-cuadrado (R²):</strong> Qué tan "confiable" es la beta - Si es alto (>0.7), la beta es confiable</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         with st.spinner('Calculando CAPM...'):
             capm_request = {
@@ -809,92 +958,97 @@ if st.session_state.data_loaded:
                 capm_data = capm_response["data"]
                 
                 # Tabla de Betas
+                st.markdown("### 📊 BETAS Y RIESGO SISTEMÁTICO")
                 beta_df = pd.DataFrame(capm_data).T
-                st.dataframe(beta_df.round(4))
+                st.dataframe(beta_df.round(4), use_container_width=True)
                 
                 # Gráfico de Betas
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    st.markdown("### 📊 Clasificación de Riesgo")
+                    st.markdown("### 🎯 CLASIFICACIÓN DE RIESGO POR ACTIVO")
+                    
                     for symbol, beta_info in capm_data.items():
                         beta = beta_info['beta']
                         if beta > 1.2:
-                            st.error(f"🔴 {symbol}: β={beta:.4f} - Alto Riesgo (Cíclico)")
+                            st.markdown(f"""
+                            <div class="status-indicator status-sell">
+                                🔴 {symbol}: β={beta:.3f} - ALTO RIESGO (Cíclico)
+                            </div>
+                            <p style="color: #BDC3C7; font-size: 0.9rem;">Amplifica los movimientos del mercado - Mayor volatilidad</p>
+                            """, unsafe_allow_html=True)
                         elif beta > 1.0:
-                            st.warning(f"🟡 {symbol}: β={beta:.4f} - Riesgo Moderado")
+                            st.markdown(f"""
+                            <div class="status-indicator status-hold">
+                                🟡 {symbol}: β={beta:.3f} - RIESGO MODERADO
+                            </div>
+                            <p style="color: #BDC3C7; font-size: 0.9rem;">Ligeramente más volátil que el mercado</p>
+                            """, unsafe_allow_html=True)
                         elif beta > 0.8:
-                            st.info(f"🔵 {symbol}: β={beta:.4f} - Riesgo Bajo")
+                            st.markdown(f"""
+                            <div class="status-indicator status-buy">
+                                🟢 {symbol}: β={beta:.3f} - BAJO RIESGO
+                            </div>
+                            <p style="color: #BDC3C7; font-size: 0.9rem;">Menos volátil que el mercado - Más estable</p>
+                            """, unsafe_allow_html=True)
                         else:
-                            st.success(f"🟢 {symbol}: β={beta:.4f} - Defensivo")
+                            st.markdown(f"""
+                            <div class="status-indicator status-buy">
+                                🟢 {symbol}: β={beta:.3f} - DEFENSIVO
+                            </div>
+                            <p style="color: #BDC3C7; font-size: 0.9rem;">Muy estable - Ideal para tiempos de crisis</p>
+                            """, unsafe_allow_html=True)
                 
                 with col2:
-                    # Interpretación de Gráfico de Betas
-                    st.markdown("### 📊 Gráfico de Betas")
-                    st.info("""
-                    **Beta = 1**: El activo se mueve exactamente como el mercado (SPY)
-                    **Beta > 1**: El activo es más volátil que el mercado (amplifica movimientos)
-                    **Beta < 1**: El activo es menos volátil que el mercado (amortigua movimientos)
-                    **Beta negativo**: El activo se mueve en dirección opuesta al mercado (raro)
-                    **Ejemplo**: β = 1.5 significa que si el mercado sube 10%, el activo tiende a subir 15%
-                    """)
+                    st.markdown("### 📊 GRÁFICO DE BETAS")
                     
                     fig_beta = go.Figure()
                     fig_beta.add_trace(go.Bar(
                         x=list(capm_data.keys()),
                         y=[b['beta'] for b in capm_data.values()],
                         name='Beta',
-                        marker_color=['#1E88E5', '#43A047', '#FB8C00', '#E53935']
+                        marker_color=['#4A90B8', '#2ECC71', '#F39C12', '#E74C3C']
                     ))
                     
                     # Línea de beta = 1
-                    fig_beta.add_hline(y=1, line_dash="dash", line_color="black", annotation_text="Beta = 1 (Mercado)")
+                    fig_beta.add_hline(y=1, line_dash="dash", line_color="#BDC3C7", annotation_text="Beta = 1 (Mercado)")
                     
                     fig_beta.update_layout(
-                        title='Betas de los Activos',
+                        title='Betas de los Activos vs Mercado',
                         xaxis_title='Activo',
-                        yaxis_title='Beta',
-                        template='plotly_white',
-                        height=400
+                        yaxis_title='Beta (β)',
+                        template='plotly_dark',
+                        height=350,
+                        plot_bgcolor='#1A2738',
+                        paper_bgcolor='#1A2738',
+                        font=dict(color='#BDC3C7'),
+                        title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif')
                     )
                     
                     st.plotly_chart(fig_beta, use_container_width=True)
     
     # 5. VaR y CVaR
     with tab5:
-        st.markdown('<div class="sub-header">⚠️ Value at Risk (VaR) & Conditional VaR</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sub-header">⚠️ GESTIÓN DE RIESGO - VALUE AT RISK (VaR) & CVaR</div>', unsafe_allow_html=True)
         
-        st.info("""
-        📖 **Interpretación Profesional de Riesgo (VaR & CVaR):**
-        
-        **⚠️ Value at Risk (VaR):**
-        - **Definición**: Pérdida máxima esperada en un horizonte de tiempo con un nivel de confianza dado
-        - **Ejemplo con 95% de confianza**: VaR = 0.03 significa que hay 95% de probabilidad de no perder más del 3% en un día
-        - **Interpretación práctica**: Si tienes $10,000 invertidos y VaR = 0.03, la pérdida máxima esperada es $300 (en el 95% de los casos)
-        - **Nivel de confianza**: 95% (α=0.05) es estándar; 99% es más conservador
-        
-        **⚠️ Conditional VaR (CVaR / Expected Shortfall):**
-        - **Definición**: Pérdida promedio CUANDO se excede el VaR (en el 5% peor de los casos)
-        - **Diferencia con VaR**: VaR dice "cuánto puedes perder"; CVaR dice "cuánto pierdes en el peor escenario"
-        - **Ejemplo**: Si VaR = 0.03 y CVaR = 0.05, en los peores días (5%), la pérdida promedio es 5%
-        - **Importancia**: CVaR es más conservador y realista que VaR
-        
-        **📊 Comparación entre Activos:**
-        - **VaR más alto**: Mayor riesgo de pérdida diaria
-        - **CVaR > VaR**: Siempre, porque CVaR mide el promedio de las peores pérdidas
-        - **Brecha entre CVaR y VaR**: Una brecha grande indica colas pesadas (eventos extremos más probables)
-        
-        **🎯 Uso Práctico:**
-        - **Gestión de capital**: No invertir más de lo que el VaR sugiere como pérdida tolerable
-        - **Límites de riesgo**: Establecer límites basados en VaR para controlar exposición
-        - **Stress testing**: CVaR ayuda a prepararse para escenarios extremos
-        """)
+        st.markdown("""
+        <div class="insight-card">
+            <h4>💡 ¿CÓMO MEDIR EL RIESGO DE PÉRDIDA?</h4>
+            <p><strong>El VaR y CVaR nos ayudan a responder: "¿Cuánto puedo perder en el peor de los casos?"</strong></p>
+            <p>• <strong>Value at Risk (VaR):</strong> "¿Cuál es la MÁXIMA pérdida que puedo tener en un día normal?"</p>
+            <p>  - Ejemplo: VaR = 0.03 (3%) con 95% confianza → Hay 95% de probabilidad de no perder más del 3% en un día</p>
+            <p>  - Si tienes $10,000 invertidos → Pérdida máxima esperada: $300 (en el 95% de los días)</p>
+            <p>• <strong>Conditional VaR (CVaR):</strong> "¿Cuánto pierdo en los DÍAS PEORES (el 5% restante)?</p>
+            <p>  - Ejemplo: CVaR = 0.05 (5%) → En los peores días (5% del tiempo), la pérdida promedio es 5%</p>
+            <p>• <strong>Diferencia clave:</strong> VaR te dice el límite "normal", CVaR te dice qué pasa cuando las cosas salen MAL</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         var_data = {}
         cvar_data = {}
         
         for symbol in returns.columns:
-            with st.spinner(f'Calculando VaR para {symbol}...'):
+            with st.spinner(f'Calculando riesgo para {symbol}...'):
                 var_request = {
                     "symbol": symbol,
                     "confidence_level": confidence_level
@@ -913,102 +1067,97 @@ if st.session_state.data_loaded:
             'CVaR': cvar_data
         })
         
-        st.dataframe(risk_df.round(4))
+        st.markdown("### 📊 MÉTRICAS DE RIESGO POR ACTIVO")
+        st.dataframe(risk_df.round(4), use_container_width=True)
         
         # Gráficos de riesgo
         col1, col2 = st.columns(2)
         
+        # Mapa de colores por activo
+        color_map = {
+            'AAPL': '#4A90B8',
+            'MSFT': '#2ECC71',
+            'XOM': '#F39C12',
+            'KO': '#E74C3C',
+            'SPY': '#9B59B6'
+        }
+        
         with col1:
-            # Interpretación de VaR
-            st.markdown("### ⚠️ Value at Risk (VaR)")
-            st.info("""
-            **Definición**: Pérdida máxima esperada con un nivel de confianza dado
-            **Ejemplo con 95% de confianza**: VaR = 0.03 significa que hay 95% de probabilidad de no perder más del 3% en un día
-            **Interpretación práctica**: Si tienes $10,000 invertidos y VaR = 0.03, la pérdida máxima esperada es $300 (en el 95% de los casos)
-            """)
+            st.markdown("### ⚠️ VALUE AT RISK (VaR)")
             
             fig_var = go.Figure()
             fig_var.add_trace(go.Bar(
                 x=risk_df.index,
                 y=risk_df['VaR'],
-                name=f'VaR ({confidence_level*100:.0f}%)',
-                marker_color='red'
+                name=f'VaR ({(1-confidence_level)*100:.0f}% Confianza)',
+                marker_color=[color_map.get(asset, '#FF6B6B') for asset in risk_df.index],
+                marker_line_color='#2C3E50',
+                marker_line_width=2
             ))
             
             fig_var.update_layout(
-                title=f'Value at Risk - {confidence_level*100:.0f}% de Confianza',
+                title=f'Value at Risk - {(1-confidence_level)*100:.0f}% de Confianza',
                 xaxis_title='Activo',
-                yaxis_title='VaR',
-                template='plotly_white',
-                height=400
+                yaxis_title='VaR (Pérdida Máxima Esperada)',
+                template='plotly_dark',
+                height=350,
+                plot_bgcolor='#1A2738',
+                paper_bgcolor='#1A2738',
+                font=dict(color='#BDC3C7'),
+                title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif'),
+                xaxis=dict(showgrid=True, gridcolor='#2C3E50', gridwidth=1),
+                yaxis=dict(showgrid=True, gridcolor='#2C3E50', gridwidth=1)
             )
             
             st.plotly_chart(fig_var, use_container_width=True)
         
         with col2:
-            # Interpretación de CVaR
-            st.markdown("### ⚠️ Conditional VaR (CVaR)")
-            st.info("""
-            **Definición**: Pérdida promedio CUANDO se excede el VaR (en el peor de los casos)
-            **Diferencia con VaR**: VaR dice "cuánto puedes perder"; CVaR dice "cuánto pierdes en el peor escenario"
-            **Ejemplo**: Si VaR = 0.03 y CVaR = 0.05, en los peores días, la pérdida promedio es 5%
-            **Importancia**: CVaR es más conservador y realista que VaR
-            """)
+            st.markdown("### ⚠️ CONDITIONAL VaR (CVaR)")
             
             fig_cvar = go.Figure()
             fig_cvar.add_trace(go.Bar(
                 x=risk_df.index,
                 y=risk_df['CVaR'],
-                name='CVaR',
-                marker_color='darkred'
+                name='CVaR (Pérdida en Peor Escenario)',
+                marker_color=[color_map.get(asset, '#8B0000') for asset in risk_df.index],
+                marker_line_color='#2C3E50',
+                marker_line_width=2
             ))
             
             fig_cvar.update_layout(
-                title='Conditional Value at Risk',
+                title='Conditional Value at Risk (Pérdida en Peores Días)',
                 xaxis_title='Activo',
                 yaxis_title='CVaR',
-                template='plotly_white',
-                height=400
+                template='plotly_dark',
+                height=350,
+                plot_bgcolor='#1A2738',
+                paper_bgcolor='#1A2738',
+                font=dict(color='#BDC3C7'),
+                title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif'),
+                xaxis=dict(showgrid=True, gridcolor='#2C3E50', gridwidth=1),
+                yaxis=dict(showgrid=True, gridcolor='#2C3E50', gridwidth=1)
             )
             
             st.plotly_chart(fig_cvar, use_container_width=True)
     
     # 6. Optimización Markowitz
     with tab6:
-        st.markdown('<div class="sub-header">⚖️ Optimización de Portafolio (Markowitz)</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sub-header">⚖️ OPTIMIZACIÓN DE PORTAFOLIO - TEORÍA MODERNA</div>', unsafe_allow_html=True)
         
-        st.info("""
-        📖 **Interpretación Profesional - Teoría Moderna de Portafolio:**
-        
-        **⚖️ Portafolio de Mínima Varianza:**
-        - **Objetivo**: Minimizar el riesgo total del portafolio mediante diversificación óptima
-        - **Cómo funciona**: Combina activos con correlaciones bajas o negativas para reducir volatilidad
-        - **Cuándo usarlo**: Para inversores conservadores o en tiempos de alta incertidumbre
-        - **Limitación**: No considera el retorno esperado, solo minimiza riesgo
-        - **Interpretación de pesos**: Los activos con menor volatilidad y correlación negativa tendrán mayor peso
-        
-        **🎯 Portafolio de Máximo Sharpe (Tangente):**
-        - **Objetivo**: Maximizar el retorno por unidad de riesgo asumido
-        - **Ratio Sharpe**: (Retorno del Portafolio - Tasa Libre de Riesgo) / Volatilidad del Portafolio
-        - **Cuándo usarlo**: Para inversores que buscan eficiencia óptima riesgo-retorno
-        - **Interpretación**: Es el portafolio más eficiente en la frontera eficiente
-        - **Ventaja**: Considera tanto retorno como riesgo simultáneamente
-        
-        **📊 Interpretación de Métricas:**
-        - **Retorno Anualizado**: Ganancia promedio esperada en un año (ej: 0.15 = 15% anual)
-        - **Volatilidad Anualizada**: Riesgo o variabilidad esperada (ej: 0.20 = ±20% anual)
-        - **Sharpe Ratio**: 
-          * < 1: Retorno insuficiente para el riesgo asumido
-          * 1-2: Buen equilibrio riesgo-retorno
-          * > 2: Excelente eficiencia (alto retorno con bajo riesgo)
-          * > 3: Excepcional (raro de encontrar)
-        
-        **🎯 Gráficos de Torta (Pesos del Portafolio):**
-        - Muestran la distribución óptima de capital entre activos
-        - **Peso alto**: El activo contribuye significativamente a la optimización
-        - **Peso bajo/cero**: El activo no mejora la relación riesgo-retorno en esta combinación
-        - **Diferencia entre portafolios**: Mínima Varianza prioriza estabilidad; Máximo Sharpe prioriza eficiencia
-        """)
+        st.markdown("""
+        <div class="insight-card">
+            <h4>💡 ¿CÓMO CONSTRUIR EL PORTAFOLIO PERFECTO?</h4>
+            <p><strong>La Teoría Moderna de Portafolio nos ayuda a encontrar el equilibrio perfecto entre riesgo y retorno:</strong></p>
+            <p>• <strong>Portafolio de Mínima Varianza:</strong> "El más SEGURO posible" - Minimiza el riesgo mediante diversificación inteligente</p>
+            <p>  - Ideal para inversores conservadores o en tiempos de incertidumbre</p>
+            <p>  - Combina activos que no se mueven juntos para reducir la volatilidad total</p>
+            <p>• <strong>Portafolio de Máximo Sharpe:</strong> "El más EFICIENTE posible" - Máximo retorno por cada unidad de riesgo</p>
+            <p>  - Ideal para inversores que buscan el mejor equilibrio riesgo-retorno</p>
+            <p>  - Es el portafolio "óptimo" en la frontera eficiente</p>
+            <p>• <strong>Sharpe Ratio:</strong> Mide la "eficiencia" - ¿Cuánto retorno obtengo por cada unidad de riesgo?</p>
+            <p>  - > 2: Excelente | 1-2: Bueno | < 1: Regular</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         with st.spinner('Optimizando portafolio...'):
             portfolio_request = {
@@ -1029,56 +1178,97 @@ if st.session_state.data_loaded:
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    st.markdown("### 🎯 Portafolio de Mínima Varianza")
-                    st.metric("Retorno Anualizado", f"{min_var_data['expected_return']:.4f}")
-                    st.metric("Volatilidad Anualizada", f"{min_var_data['volatility']:.4f}")
-                    st.metric("Sharpe Ratio", f"{min_var_data['sharpe_ratio']:.4f}")
+                    st.markdown("### 🎯 PORTAFOLIO DE MÍNIMA VARIANZA (El Más Seguro)")
+                    
+                    st.markdown(f"""
+                    <div class="metric-card">
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #2ECC71;">{min_var_data['expected_return']:.2%}</div>
+                        <div style="color: #BDC3C7; text-transform: uppercase; font-size: 0.9rem;">Retorno Anual Esperado</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    st.markdown(f"""
+                    <div class="metric-card">
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #F39C12;">{min_var_data['volatility']:.2%}</div>
+                        <div style="color: #BDC3C7; text-transform: uppercase; font-size: 0.9rem;">Riesgo (Volatilidad)</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    st.markdown(f"""
+                    <div class="metric-card">
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #4A90B8;">{min_var_data['sharpe_ratio']:.2f}</div>
+                        <div style="color: #BDC3C7; text-transform: uppercase; font-size: 0.9rem;">Sharpe Ratio (Eficiencia)</div>
+                    </div>
+                    """, unsafe_allow_html=True)
                     
                     # Gráfico de pesos
                     weights_df = pd.DataFrame(list(min_var_data['weights'].items()), columns=['Activo', 'Peso'])
-                    fig_min_var = px.pie(weights_df, values='Peso', names='Activo', title="Composición - Mínima Varianza")
+                    
+                    # Asignar colores específicos por activo
+                    color_map = {
+                        'AAPL': '#4A90B8',
+                        'MSFT': '#2ECC71',
+                        'XOM': '#F39C12',
+                        'KO': '#E74C3C',
+                        'SPY': '#9B59B6'
+                    }
+                    
+                    fig_min_var = px.pie(weights_df, values='Peso', names='Activo', title="Composición - Mínima Varianza",
+                                        color='Activo',
+                                        color_discrete_map=color_map)
                     st.plotly_chart(fig_min_var, use_container_width=True)
                 
                 with col2:
-                    st.markdown("### 🎯 Portafolio de Máximo Sharpe")
-                    st.metric("Retorno Anualizado", f"{max_sharpe_data['expected_return']:.4f}")
-                    st.metric("Volatilidad Anualizada", f"{max_sharpe_data['volatility']:.4f}")
-                    st.metric("Sharpe Ratio", f"{max_sharpe_data['sharpe_ratio']:.4f}")
+                    st.markdown("### 🎯 PORTAFOLIO DE MÁXIMO SHARPE (El Más Eficiente)")
+                    
+                    st.markdown(f"""
+                    <div class="metric-card">
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #2ECC71;">{max_sharpe_data['expected_return']:.2%}</div>
+                        <div style="color: #BDC3C7; text-transform: uppercase; font-size: 0.9rem;">Retorno Anual Esperado</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    st.markdown(f"""
+                    <div class="metric-card">
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #F39C12;">{max_sharpe_data['volatility']:.2%}</div>
+                        <div style="color: #BDC3C7; text-transform: uppercase; font-size: 0.9rem;">Riesgo (Volatilidad)</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    st.markdown(f"""
+                    <div class="metric-card">
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #4A90B8;">{max_sharpe_data['sharpe_ratio']:.2f}</div>
+                        <div style="color: #BDC3C7; text-transform: uppercase; font-size: 0.9rem;">Sharpe Ratio (Eficiencia)</div>
+                    </div>
+                    """, unsafe_allow_html=True)
                     
                     # Gráfico de pesos
                     weights_df = pd.DataFrame(list(max_sharpe_data['weights'].items()), columns=['Activo', 'Peso'])
-                    fig_max_sharpe = px.pie(weights_df, values='Peso', names='Activo', title="Composición - Máximo Sharpe")
+                    
+                    # Usar el mismo mapa de colores
+                    fig_max_sharpe = px.pie(weights_df, values='Peso', names='Activo', title="Composición - Máximo Sharpe",
+                                           color='Activo',
+                                           color_discrete_map=color_map)
                     st.plotly_chart(fig_max_sharpe, use_container_width=True)
     
     # 7. Señales de Trading
     with tab7:
-        st.markdown('<div class="sub-header">🎯 Sistema de Señales de Trading</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sub-header">🎯 SISTEMA DE SEÑALES DE TRADING</div>', unsafe_allow_html=True)
         
-        st.info("""
-        📖 **Interpretación Profesional del Sistema de Señales:**
-        
-        **🎯 Estrategia Combinada (SMA + RSI):**
-        - **Señal de COMPRA (BUY)**: SMA 20 > SMA 50 (tendencia alcista) + RSI < 30 (sobreventa)
-        - **Señal de VENTA (SELL)**: SMA 20 < SMA 50 (tendencia bajista) + RSI > 70 (sobrecompra)
-        - **Señal NEUTRAL (HOLD)**: Cuando no se cumplen ambas condiciones simultáneamente
-        
-        **📊 Niveles de Confianza:**
-        - **Confianza Alta (>0.7)**: Ambos indicadores dan señales claras y fuertes
-        - **Confianza Media (0.4-0.7)**: Un indicador es más fuerte que el otro
-        - **Confianza Baja (<0.4)**: Señales débiles o contradictorias
-        
-        **📈 Interpretación del Gráfico:**
-        - **Triángulos Verdes (▲)**: Puntos históricos donde se generaron señales de COMPRA
-        - **Triángulos Rojos (▼)**: Puntos históricos donde se generaron señales de VENTA
-        - **Línea Negra**: Evolución del precio del activo en el tiempo
-        - **Hover/Tooltip**: Al pasar el mouse muestra precio exacto y valor de RSI en ese momento
-        
-        **🎯 Uso Práctico:**
-        - **Señales Históricas**: Muestran cuándo hubieran sido buenos momentos de entrada/salida
-        - **Validación**: Permite evaluar qué tan bien hubiera funcionado la estrategia
-        - **Frecuencia**: Pocas señales = estrategia conservadora; muchas señales = estrategia agresiva
-        - **Combinación con otros indicadores**: Usar junto con análisis fundamental para mejores resultados
-        """)
+        st.markdown("""
+        <div class="insight-card">
+            <h4>💡 ¿CÓMO FUNCIONA EL SISTEMA DE SEÑALES?</h4>
+            <p><strong>Nuestro sistema combina dos indicadores poderosos para generar señales de compra/venta:</strong></p>
+            <p>• <strong>Señal de COMPRA (BUY):</strong> Cuando se cumplen DOS condiciones:</p>
+            <p>  1. SMA 20 > SMA 50 (tendencia alcista confirmada)</p>
+            <p>  2. RSI < 30 (el activo está "barato" - sobrevendido)</p>
+            <p>• <strong>Señal de VENTA (SELL):</strong> Cuando se cumplen DOS condiciones:</p>
+            <p>  1. SMA 20 < SMA 50 (tendencia bajista confirmada)</p>
+            <p>  2. RSI > 70 (el activo está "caro" - sobrecomprado)</p>
+            <p>• <strong>Señal NEUTRAL (HOLD):</strong> Cuando no se cumplen ambas condiciones simultáneamente</p>
+            <p><strong>En el gráfico:</strong> Los triángulos verdes (▲) muestran dónde hubieran sido buenas compras, los rojos (▼) dónde hubieran sido buenas ventas</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         signals_data = {}
         
@@ -1097,10 +1287,11 @@ if st.session_state.data_loaded:
         if signals_data:
             # Tabla de señales
             signals_df = pd.DataFrame(signals_data).T
-            st.dataframe(signals_df)
+            st.markdown("### 📊 RESUMEN DE SEÑALES ACTUALES")
+            st.dataframe(signals_df, use_container_width=True)
             
             # Gráficos de señales
-            selected_signal_asset = st.selectbox("Seleccionar Activo para Gráfico de Señales", options=returns.columns, key="signal_symbol")
+            selected_signal_asset = st.selectbox("Seleccionar Activo para Ver Histórico de Señales", options=returns.columns, key="signal_symbol")
             
             if selected_signal_asset and selected_signal_asset in signals_data:
                 signal_info = signals_data[selected_signal_asset]
@@ -1114,7 +1305,7 @@ if st.session_state.data_loaded:
                     y=prices[selected_signal_asset],
                     mode='lines',
                     name=f'{selected_signal_asset} Precio',
-                    line=dict(color='black', width=2)
+                    line=dict(color='#4A90B8', width=2)
                 ))
                 
                 # Calcular señales históricas basadas en SMA y RSI
@@ -1132,8 +1323,6 @@ if st.session_state.data_loaded:
                 rsi = 100 - (100 / (1 + rs))
                 
                 # Identificar señales de compra y venta a lo largo del tiempo
-                buy_signals = []
-                sell_signals = []
                 buy_dates = []
                 sell_dates = []
                 buy_prices = []
@@ -1142,12 +1331,10 @@ if st.session_state.data_loaded:
                 for i in range(50, len(close_prices)):  # Empezar después de que SMA50 tenga datos
                     # Señal de COMPRA: SMA20 > SMA50 y RSI < 30
                     if sma_20.iloc[i] > sma_50.iloc[i] and rsi.iloc[i] < 30:
-                        buy_signals.append(True)
                         buy_dates.append(close_prices.index[i])
                         buy_prices.append(close_prices.iloc[i])
                     # Señal de VENTA: SMA20 < SMA50 y RSI > 70
                     elif sma_20.iloc[i] < sma_50.iloc[i] and rsi.iloc[i] > 70:
-                        sell_signals.append(True)
                         sell_dates.append(close_prices.index[i])
                         sell_prices.append(close_prices.iloc[i])
                 
@@ -1157,8 +1344,8 @@ if st.session_state.data_loaded:
                         x=buy_dates,
                         y=buy_prices,
                         mode='markers',
-                        name='Señal de COMPRA',
-                        marker=dict(color='green', symbol='triangle-up', size=15),
+                        name='Señales de COMPRA (▲)',
+                        marker=dict(color='#2ECC71', symbol='triangle-up', size=15),
                         text=[f'COMPRA<br>Precio: ${p:.2f}<br>RSI: {rsi.loc[d]:.2f}' for d, p in zip(buy_dates, buy_prices)],
                         hoverinfo='text'
                     ))
@@ -1169,8 +1356,8 @@ if st.session_state.data_loaded:
                         x=sell_dates,
                         y=sell_prices,
                         mode='markers',
-                        name='Señal de VENTA',
-                        marker=dict(color='red', symbol='triangle-down', size=15),
+                        name='Señales de VENTA (▼)',
+                        marker=dict(color='#E74C3C', symbol='triangle-down', size=15),
                         text=[f'VENTA<br>Precio: ${p:.2f}<br>RSI: {rsi.loc[d]:.2f}' for d, p in zip(sell_dates, sell_prices)],
                         hoverinfo='text'
                     ))
@@ -1180,68 +1367,46 @@ if st.session_state.data_loaded:
                     fig_signals.add_annotation(
                         x=prices.index[len(prices)//2],
                         y=close_prices.iloc[len(close_prices)//2],
-                        text="No hay señales claras de compra/venta en el período",
+                        text="No hay señales claras de compra/venta en el período analizado",
                         showarrow=False,
-                        font=dict(size=14, color="gray"),
-                        bgcolor="rgba(255,255,255,0.8)",
-                        bordercolor="gray",
-                        borderwidth=1
+                        font=dict(size=14, color="#BDC3C7"),
+                        bgcolor="rgba(74, 144, 184, 0.8)",
+                        bordercolor="#4A90B8",
+                        borderwidth=1,
+                        borderpad=10
                     )
                 
                 fig_signals.update_layout(
-                    title=f'Señales de Trading - {selected_signal_asset}',
+                    title=f'Histórico de Señales de Trading - {selected_signal_asset}',
                     xaxis_title='Fecha',
                     yaxis_title='Precio ($)',
-                    template='plotly_white',
-                    height=500
+                    template='plotly_dark',
+                    height=400,
+                    plot_bgcolor='#1A2738',
+                    paper_bgcolor='#1A2738',
+                    font=dict(color='#BDC3C7'),
+                    title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif')
                 )
                 
                 st.plotly_chart(fig_signals, use_container_width=True)
     
     # 8. Comparación con Benchmark
     with tab8:
-        st.markdown('<div class="sub-header">🏆 Comparación con Benchmark (SPY)</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sub-header">🏆 ANÁLISIS VS BENCHMARK (S&P 500)</div>', unsafe_allow_html=True)
         
-        st.info("""
-        📖 **Interpretación Profesional - Análisis vs Benchmark:**
-        
-        **📊 Retornos Acumulados:**
-        - **Línea más alta**: El activo supera al benchmark (SPY) en rendimiento
-        - **Línea más baja**: El activo bajo-performa vs el benchmark
-        - **Divergencia creciente**: El activo se desempeña consistentemente mejor o peor
-        - **Convergencia**: El activo tiende a seguir el mismo patrón que el mercado
-        
-        **📈 Alpha (α) - Exceso de Retorno:**
-        - **Alpha > 0**: El activo genera retornos superiores al mercado después de ajustar por riesgo
-        - **Alpha < 0**: El activo genera retornos inferiores al mercado
-        - **Alpha = 0**: El activo se desempeña exactamente como predice su beta
-        - **Importancia**: Alpha positivo indica habilidad del gestor, ventajas competitivas o factores específicos
-        
-        **📊 Beta (β) - Sensibilidad al Mercado:**
-        - **Beta > 1**: El activo es más volátil que el mercado (amplifica movimientos)
-        - **Beta < 1**: El activo es menos volátil que el mercado (amortigua movimientos)
-        - **Beta = 1**: El activo se mueve en línea con el mercado
-        - **Beta negativo**: El activo se mueve en dirección opuesta al mercado (raro)
-        
-        **🎯 Tracking Error:**
-        - **Definición**: Desviación estándar de los retornos del activo menos los retornos del benchmark
-        - **Interpretación**: Mide cuánto se desvía el activo del benchmark
-        - **Tracking Error bajo**: El activo sigue de cerca al benchmark (estrategia indexada)
-        - **Tracking Error alto**: El activo tiene comportamiento muy diferente al benchmark (estrategia activa)
-        
-        **📊 Information Ratio (IR):**
-        - **Fórmula**: (Alpha del activo) / (Tracking Error)
-        - **IR > 0**: El activo genera alpha positivo por unidad de desviación del benchmark
-        - **IR < 0**: El activo genera alpha negativo (pérdida de valor)
-        - **IR alto**: Alta eficiencia en generar retornos excedentes
-        - **IR bajo**: Baja eficiencia o alpha negativo
-        
-        **🎯 Uso Práctico:**
-        - **Gestión Activa**: Buscar activos con alpha positivo y alto information ratio
-        - **Gestión Pasiva**: Buscar activos con bajo tracking error (para replicar benchmark)
-        - **Evaluación de Fondos**: Comparar fondos mutuos o ETFs vs sus benchmarks
-        - **Atribución de Rendimiento**: Entender qué parte del rendimiento se debe al mercado (beta) y qué parte al manejo (alpha)
-        """)
+        st.markdown("""
+        <div class="insight-card">
+            <h4>💡 ¿CÓMO SE DESEMPEÑAN NUESTROS ACTIVOS VS EL MERCADO?</h4>
+            <p><strong>Comparamos cada activo contra el S&P 500 (SPY) para ver si superan o no al mercado:</strong></p>
+            <p>• <strong>Retornos Acumulados:</strong> Muestra cuánto hubiera ganado $1 invertido en cada activo a lo largo del tiempo</p>
+            <p>  - Línea más alta = Mejor desempeño vs el mercado</p>
+            <p>• <strong>Alpha (α):</strong> El "valor agregado" - ¿El activo supera al mercado después de ajustar por riesgo?</p>
+            <p>  - Alpha positivo = Supera al mercado (¡Excelente!)</p>
+            <p>  - Alpha negativo = Bajo desempeño vs el mercado</p>
+            <p>• <strong>Beta (β):</strong> Qué tan "nervioso" es comparado con el mercado</p>
+            <p>• <strong>Information Ratio:</strong> Mide la "eficiencia" en generar alpha - ¿Vale la pena el riesgo extra?</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         with st.spinner('Comparando con benchmark...'):
             benchmark_request = {
@@ -1259,64 +1424,84 @@ if st.session_state.data_loaded:
                 
                 fig_benchmark = go.Figure()
                 
-                for symbol in returns.columns:
+                colors = ['#4A90B8', '#2ECC71', '#F39C12', '#E74C3C', '#9B59B6']
+                for i, symbol in enumerate(returns.columns):
                     fig_benchmark.add_trace(go.Scatter(
                         x=cumulative_returns.index,
                         y=cumulative_returns[symbol],
                         mode='lines',
                         name=symbol,
-                        line=dict(width=2)
+                        line=dict(color=colors[i % len(colors)], width=2)
                     ))
                 
                 fig_benchmark.update_layout(
-                    title='Retornos Acumulados vs Benchmark',
+                    title='Retornos Acumulados vs Benchmark (S&P 500)',
                     xaxis_title='Fecha',
                     yaxis_title='Retorno Acumulado',
-                    template='plotly_white',
-                    height=500
+                    template='plotly_dark',
+                    height=400,
+                    plot_bgcolor='#1A2738',
+                    paper_bgcolor='#1A2738',
+                    font=dict(color='#BDC3C7', size=11),
+                    title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif'),
+                    legend=dict(
+                        font=dict(size=12, color='#FFFFFF'),
+                        bgcolor='rgba(26, 39, 56, 0.8)',
+                        bordercolor='#4A90B8',
+                        borderwidth=1
+                    )
                 )
                 
                 st.plotly_chart(fig_benchmark, use_container_width=True)
                 
                 # Métricas de performance vs benchmark
                 performance_df = pd.DataFrame(benchmark_data).T
-                st.dataframe(performance_df.round(4))
+                st.markdown("### 📊 MÉTRICAS DE PERFORMANCE VS BENCHMARK")
+                st.dataframe(performance_df.round(4), use_container_width=True)
                 
                 # Gráfico de Alpha
                 if not performance_df.empty:
+                    st.markdown("### 📈 ALPHA - ¿QUIÉN SUPERA AL MERCADO?")
+                    
                     fig_alpha = go.Figure()
                     fig_alpha.add_trace(go.Bar(
                         x=performance_df.index,
                         y=performance_df['alpha'],
                         name='Alpha',
-                        marker_color=['green' if x > 0 else 'red' for x in performance_df['alpha']]
+                        marker_color=['#2ECC71' if x > 0 else '#E74C3C' for x in performance_df['alpha']]
                     ))
                     
-                    fig_alpha.add_hline(y=0, line_dash="dash", line_color="black")
+                    fig_alpha.add_hline(y=0, line_dash="dash", line_color="#BDC3C7")
                     fig_alpha.update_layout(
-                        title='Alpha vs Benchmark (SPY)',
+                        title='Alpha vs Benchmark (S&P 500) - Valor Agregado',
                         xaxis_title='Activo',
-                        yaxis_title='Alpha',
-                        template='plotly_white',
-                        height=400
+                        yaxis_title='Alpha (α)',
+                        template='plotly_dark',
+                        height=350,
+                        plot_bgcolor='#1A2738',
+                        paper_bgcolor='#1A2738',
+                        font=dict(color='#BDC3C7'),
+                        title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif')
                     )
                     
                     st.plotly_chart(fig_alpha, use_container_width=True)
 
 else:
     st.markdown("""
-    <div style="text-align: center; padding: 3rem;">
-        <h2>🚀 Dashboard de Riesgo Financiero</h2>
-        <p>Por favor, haga clic en "Cargar Datos" para comenzar el análisis.</p>
-        <p><strong>Nota:</strong> Asegúrate de que el Backend FastAPI esté corriendo en <code>http://localhost:8000</code></p>
-        <p><strong>Activos incluidos:</strong> Apple (AAPL), Microsoft (MSFT), Exxon (XOM), Coca-Cola (KO), S&P 500 (SPY)</p>
+    <div style="text-align: center; padding: 4rem; background: linear-gradient(135deg, #1A2738 0%, #2C3E50 100%); border-radius: 16px; border: 1px solid #34495E;">
+        <h2 style="color: #4A90B8; font-size: 2.5rem; margin-bottom: 1rem;">🚀 SISTEMA DE GESTIÓN DE PORTAFOLIO</h2>
+        <p style="color: #BDC3C7; font-size: 1.1rem; margin-bottom: 2rem;">Haga clic en "ACTUALIZAR DATOS" para comenzar el análisis profesional</p>
+        <p style="color: #7F8C8D; font-size: 0.9rem;">
+            <strong>Activos disponibles:</strong> Apple (AAPL), Microsoft (MSFT), Exxon (XOM), Coca-Cola (KO), S&P 500 (SPY)<br>
+            <strong>Nota:</strong> Asegúrate de que el Backend FastAPI esté corriendo en <code style="background: #34495E; padding: 0.2rem 0.5rem; border-radius: 4px;">http://localhost:8000</code>
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
 # Footer
 st.markdown("""
 <div class="footer">
-    Dashboard de Riesgo Financiero - Backend FastAPI + Frontend Streamlit<br>
-    Proyecto Universitario - Análisis de Riesgo Financiero con Portafolio
+    <strong>Sistema Profesional de Gestión de Portafolio</strong> | Backend FastAPI + Frontend Streamlit<br>
+    Proyecto Universitario - Análisis de Riesgo Financiero con Portafolio | 2024
 </div>
 """, unsafe_allow_html=True)
