@@ -1340,24 +1340,28 @@ if st.session_state.data_loaded:
                 
                 # Mostrar señales de COMPRA en el gráfico
                 if buy_dates:
+                    # Ajustar posición de flechas: ligeramente por debajo del precio
+                    buy_prices_adjusted = [p * 0.98 for p in buy_prices]  # 2% por debajo
                     fig_signals.add_trace(go.Scatter(
                         x=buy_dates,
-                        y=buy_prices,
+                        y=buy_prices_adjusted,
                         mode='markers',
                         name='Señales de COMPRA (▲)',
-                        marker=dict(color='#2ECC71', symbol='triangle-up', size=15),
+                        marker=dict(color='#2ECC71', symbol='triangle-up', size=18, line=dict(width=2, color='#1E8449')),
                         text=[f'COMPRA<br>Precio: ${p:.2f}<br>RSI: {rsi.loc[d]:.2f}' for d, p in zip(buy_dates, buy_prices)],
                         hoverinfo='text'
                     ))
                 
                 # Mostrar señales de VENTA en el gráfico
                 if sell_dates:
+                    # Ajustar posición de flechas: ligeramente por encima del precio
+                    sell_prices_adjusted = [p * 1.02 for p in sell_prices]  # 2% por encima
                     fig_signals.add_trace(go.Scatter(
                         x=sell_dates,
-                        y=sell_prices,
+                        y=sell_prices_adjusted,
                         mode='markers',
                         name='Señales de VENTA (▼)',
-                        marker=dict(color='#E74C3C', symbol='triangle-down', size=15),
+                        marker=dict(color='#E74C3C', symbol='triangle-down', size=18, line=dict(width=2, color='#922B21')),
                         text=[f'VENTA<br>Precio: ${p:.2f}<br>RSI: {rsi.loc[d]:.2f}' for d, p in zip(sell_dates, sell_prices)],
                         hoverinfo='text'
                     ))
