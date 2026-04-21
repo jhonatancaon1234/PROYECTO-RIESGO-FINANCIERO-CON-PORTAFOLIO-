@@ -33,7 +33,17 @@ class TechnicalAnalysis:
         return rsi
     
     def calculate_macd(self, fast=12, slow=26, signal=9):
-        """Calcula MACD (Moving Average Convergence Divergence)"""
+        """Calcula MACD (Moving Average Convergence Divergence)
+        
+        El MACD muestra la relación entre dos medias móviles exponenciales del precio:
+        - MACD Line = EMA(12) - EMA(26)
+        - Signal Line = EMA(9) del MACD
+        - Histogram = MACD - Signal
+        
+        Señales:
+        - Cruce alcista: MACD cruza hacia ARRIBA de Signal → COMPRA
+        - Cruce bajista: MACD cruza hacia ABAJO de Signal → VENTA
+        """
         ema_fast = self.prices.ewm(span=fast).mean()
         ema_slow = self.prices.ewm(span=slow).mean()
         
@@ -42,6 +52,40 @@ class TechnicalAnalysis:
         histogram = macd - signal_line
         
         return macd, signal_line, histogram
+    
+    def calculate_stochastic(self, k_period=14, d_period=3):
+        """Calcula Estocástico (Stochastic Oscillator)
+        
+        El estocástico compara el precio de cierre con su rango en un período:
+        - %K = (Cierre - Mínimo) / (Máximo - Mínimo) × 100
+        - %D = SMA(3) del %K
+        
+        Señales:
+        - > 80: Zona de sobrecompra (posible corrección)
+        - < 20: Zona de sobreventa (posible rebote)
+        - %K cruza hacia ARRIBA de %D: Señal de COMPRA
+        - %K cruza hacia ABAJO de %D: Señal de VENTA
+        """
+        # Necesitamos los precios de cierre, máximos y mínimos
+        # Si solo tenemos precios de cierre, usamos ese como referencia
+        close_prices = self.prices
+        
+        # Para un cálculo más preciso, necesitaríamos datos OHLC
+        # Por ahora, usamos el precio de cierre como aproximación
+        # En una implementación real, se deberían usar high, low, close
+        
+        # Calculamos el rango rolling
+        rolling_min = close_prices.rolling(window=k_period).min()
+        rolling_max = close_prices.rolling(window=k_period).max()
+        rolling_range = rolling_max - rolling_min
+        
+        # Calculamos %K
+        k_percent = ((close_prices - rolling_min) / rolling_range) * 100
+        
+        # Calculamos %D (SMA del %K)
+        d_percent = k_percent.rolling(window=d_period).mean()
+        
+        return k_percent, d_percent
     
     def calculate_bollinger_bands(self, period=20, std_dev=2):
         """Calcula bandas de Bollinger"""

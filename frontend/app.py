@@ -584,33 +584,36 @@ if st.session_state.data_loaded:
                         # Gráfico de precios con indicadores
                         fig = go.Figure()
                         
-                        # Precio
+                        # Precio - Variable: price_series
+                        price_series = prices[selected_symbol]
                         fig.add_trace(go.Scatter(
                             x=prices.index,
-                            y=prices[selected_symbol],
+                            y=price_series,
                             mode='lines',
-                            name=f'{selected_symbol} Precio',
+                            name=f'{selected_symbol} (Precio)',
                             line=dict(color='#4A90B8', width=3)
                         ))
                         
                         # Calcular SMAs históricas completas (no solo valor actual)
-                        sma_20 = prices[selected_symbol].rolling(window=20).mean()
-                        sma_50 = prices[selected_symbol].rolling(window=50).mean()
+                        # Variable: sma_short_series (SMA 20 días)
+                        sma_short_series = prices[selected_symbol].rolling(window=20).mean()
+                        # Variable: sma_long_series (SMA 50 días)
+                        sma_long_series = prices[selected_symbol].rolling(window=50).mean()
                         
                         # Medias móviles como series temporales
                         fig.add_trace(go.Scatter(
                             x=prices.index,
-                            y=sma_20,  # Serie temporal completa
+                            y=sma_short_series,  # Serie temporal completa SMA 20
                             mode='lines',
-                            name='SMA 20 (Corta)',
+                            name='SMA 20 (Media 20 días)',
                             line=dict(color='#F39C12', width=2)
                         ))
                         
                         fig.add_trace(go.Scatter(
                             x=prices.index,
-                            y=sma_50,  # Serie temporal completa
+                            y=sma_long_series,  # Serie temporal completa SMA 50
                             mode='lines',
-                            name='SMA 50 (Larga)',
+                            name='SMA 50 (Media 50 días)',
                             line=dict(color='#E74C3C', width=2)
                         ))
                         
@@ -677,6 +680,147 @@ if st.session_state.data_loaded:
                         )
                         
                         st.plotly_chart(fig_rsi, use_container_width=True)
+                    
+                    # MACD
+                    st.markdown("### 📈 MACD - CONVERGENCIA/DIVERGENCIA DE MEDIAS MÓVILES")
+                    
+                    # Interpretación humanizada
+                    st.markdown("""
+                    <div class="insight-card">
+                        <h4>💡 ¿QUÉ NOS DICE EL MACD?</h4>
+                        <p><strong>El MACD muestra la relación entre dos medias móviles exponenciales del precio:</strong></p>
+                        <p>• <strong>Línea MACD (azul):</strong> EMA(12) - EMA(26) - Mide el momentum</p>
+                        <p>• <strong>Línea de Señal (naranja):</strong> EMA(9) del MACD - Confirma tendencias</p>
+                        <p>• <strong>Histograma (barras):</strong> Diferencia entre MACD y Señal - Mide fuerza</p>
+                        <p>• <strong>Señal de COMPRA:</strong> MACD cruza HACIA ARRIBA de la línea de señal</p>
+                        <p>• <strong>Señal de VENTA:</strong> MACD cruza HACIA ABAJO de la línea de señal</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Calcular MACD histórico
+                    ema_fast = prices[selected_symbol].ewm(span=12).mean()
+                    ema_slow = prices[selected_symbol].ewm(span=26).mean()
+                    macd_line = ema_fast - ema_slow
+                    signal_line = macd_line.ewm(span=9).mean()
+                    histogram = macd_line - signal_line
+                    
+                    # Gráfico MACD
+                    fig_macd = make_subplots(rows=2, cols=1, shared_xaxes=True, 
+                                            vertical_spacing=0.02, row_heights=[0.7, 0.3])
+                    
+                    # Líneas MACD y Signal
+                    fig_macd.add_trace(go.Scatter(
+                        x=prices.index,
+                        y=macd_line,
+                        mode='lines',
+                        name='MACD',
+                        line=dict(color='#4A90B8', width=2)
+                    ), row=1, col=1)
+                    
+                    fig_macd.add_trace(go.Scatter(
+                        x=prices.index,
+                        y=signal_line,
+                        mode='lines',
+                        name='Señal',
+                        line=dict(color='#F39C12', width=2)
+                    ), row=1, col=1)
+                    
+                    # Histograma
+                    colors = ['#2ECC71' if val > 0 else '#E74C3C' for val in histogram]
+                    fig_macd.add_trace(go.Bar(
+                        x=prices.index,
+                        y=histogram,
+                        name='Histograma',
+                        marker_color=colors,
+                        opacity=0.7
+                    ), row=2, col=1)
+                    
+                    fig_macd.update_layout(
+                        title=f'MACD - {selected_symbol}',
+                        template='plotly_dark',
+                        height=400,
+                        plot_bgcolor='#1A2738',
+                        paper_bgcolor='#1A2738',
+                        font=dict(color='#BDC3C7'),
+                        title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif'),
+                        showlegend=True,
+                        legend=dict(
+                            orientation="h",
+                            yanchor="bottom",
+                            y=1.02,
+                            xanchor="right",
+                            x=1
+                        )
+                    )
+                    
+                    fig_macd.update_xaxes(title_text="Fecha", row=2, col=1)
+                    fig_macd.update_yaxes(title_text="MACD", row=1, col=1)
+                    fig_macd.update_yaxes(title_text="Histograma", row=2, col=1)
+                    
+                    st.plotly_chart(fig_macd, use_container_width=True)
+                    
+                    # Estocástico
+                    st.markdown("### 📊 ESTOCÁSTICO - MOMENTUM DEL PRECIO")
+                    
+                    # Interpretación humanizada
+                    st.markdown("""
+                    <div class="insight-card">
+                        <h4>💡 ¿QUÉ NOS DICE EL ESTOCÁSTICO?</h4>
+                        <p><strong>El estocástico compara el precio de cierre con su rango en un período:</strong></p>
+                        <p>• <strong>%K (línea azul):</strong> Posición del cierre respecto al rango reciente</p>
+                        <p>• <strong>%D (línea naranja):</strong> Promedio del %K - Suaviza las señales</p>
+                        <p>• <strong>> 80:</strong> Zona de sobrecompra (posible venta)</p>
+                        <p>• <strong>< 20:</strong> Zona de sobreventa (posible compra)</p>
+                        <p>• <strong>Cruce %K hacia ARRIBA de %D:</strong> Señal de COMPRA</p>
+                        <p>• <strong>Cruce %K hacia ABAJO de %D:</strong> Señal de VENTA</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Calcular Estocástico
+                    rolling_min = prices[selected_symbol].rolling(window=14).min()
+                    rolling_max = prices[selected_symbol].rolling(window=14).max()
+                    rolling_range = rolling_max - rolling_min
+                    k_percent = ((prices[selected_symbol] - rolling_min) / rolling_range) * 100
+                    d_percent = k_percent.rolling(window=3).mean()
+                    
+                    # Gráfico Estocástico
+                    fig_stoch = go.Figure()
+                    
+                    fig_stoch.add_trace(go.Scatter(
+                        x=prices.index,
+                        y=k_percent,
+                        mode='lines',
+                        name='%K',
+                        line=dict(color='#4A90B8', width=2)
+                    ))
+                    
+                    fig_stoch.add_trace(go.Scatter(
+                        x=prices.index,
+                        y=d_percent,
+                        mode='lines',
+                        name='%D',
+                        line=dict(color='#F39C12', width=2)
+                    ))
+                    
+                    # Zonas de sobrecompra/sobreventa
+                    fig_stoch.add_hline(y=80, line_dash="dash", line_color="#E74C3C", 
+                                       annotation_text="Sobrecompra (>80)")
+                    fig_stoch.add_hline(y=20, line_dash="dash", line_color="#2ECC71", 
+                                       annotation_text="Sobreventa (<20)")
+                    
+                    fig_stoch.update_layout(
+                        title=f'Estocástico - {selected_symbol}',
+                        xaxis_title='Fecha',
+                        yaxis_title='Estocástico',
+                        template='plotly_dark',
+                        height=350,
+                        plot_bgcolor='#1A2738',
+                        paper_bgcolor='#1A2738',
+                        font=dict(color='#BDC3C7'),
+                        title_font=dict(color='#FFFFFF', size=14, family='Arial, sans-serif')
+                    )
+                    
+                    st.plotly_chart(fig_stoch, use_container_width=True)
                     
                     # Señales actuales
                     st.markdown("### 🎯 SEÑALES ACTUALES DEL MERCADO")

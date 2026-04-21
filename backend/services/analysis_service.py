@@ -19,7 +19,7 @@ class AnalysisService:
         pass
     
     def calculate_technical_indicators(self, prices: pd.Series, symbol: str) -> Dict[str, Any]:
-        """Calcula indicadores técnicos"""
+        """Calcula indicadores técnicos (SMA, RSI, MACD, Estocástico)"""
         try:
             # Medias móviles
             sma_20 = prices.rolling(window=20).mean().iloc[-1]
@@ -32,17 +32,54 @@ class AnalysisService:
             rs = gain / loss
             rsi = 100 - (100 / (1 + rs)).iloc[-1]
             
-            # Señal
-            if sma_20 > sma_50 and rsi < 30:
+            # MACD
+            ema_fast = prices.ewm(span=12).mean()
+            ema_slow = prices.ewm(span=26).mean()
+            macd_line = ema_fast - ema_slow
+            signal_line = macd_line.ewm(span=9).mean()
+            macd_histogram = macd_line - signal_line
+            
+            macd_value = macd_line.iloc[-1]
+            macd_signal = signal_line.iloc[-1]
+            macd_hist = macd_histogram.iloc[-1]
+            
+            # Estocástico
+            rolling_min = prices.rolling(window=14).min()
+            rolling_max = prices.rolling(window=14).max()
+            rolling_range = rolling_max - rolling_min
+            
+            k_percent = ((prices - rolling_min) / rolling_range) * 100
+            d_percent = k_percent.rolling(window=3).mean()
+            
+            stoch_k = k_percent.iloc[-1]
+            stoch_d = d_percent.iloc[-1]
+            
+            # Señal combinada
+            # SMA Signal
+            sma_signal = 1 if sma_20 > sma_50 else -1
+            
+            # RSI Signal
+            rsi_signal = 1 if rsi < 30 else (-1 if rsi > 70 else 0)
+            
+            # MACD Signal
+            macd_signal_type = 1 if macd_value > macd_signal else (-1 if macd_value < macd_signal else 0)
+            
+            # Estocástico Signal
+            stoch_signal = 1 if stoch_k < 20 else (-1 if stoch_k > 80 else 0)
+            
+            # Señal combinada
+            combined_signal = (sma_signal + rsi_signal + macd_signal_type + stoch_signal) / 4
+            
+            if combined_signal > 0.5:
                 signal = "STRONG_BUY"
                 recommendation = "COMPRAR"
-            elif sma_20 > sma_50:
+            elif combined_signal > 0.1:
                 signal = "BUY"
                 recommendation = "COMPRAR"
-            elif sma_20 < sma_50 and rsi > 70:
+            elif combined_signal < -0.5:
                 signal = "STRONG_SELL"
                 recommendation = "VENDER"
-            elif sma_20 < sma_50:
+            elif combined_signal < -0.1:
                 signal = "SELL"
                 recommendation = "VENDER"
             else:
@@ -54,6 +91,11 @@ class AnalysisService:
                 'sma_short': float(sma_20),
                 'sma_long': float(sma_50),
                 'rsi': float(rsi),
+                'macd': float(macd_value),
+                'macd_signal': float(macd_signal),
+                'macd_histogram': float(macd_hist),
+                'stochastic_k': float(stoch_k),
+                'stochastic_d': float(stoch_d),
                 'signal': signal,
                 'recommendation': recommendation
             }
