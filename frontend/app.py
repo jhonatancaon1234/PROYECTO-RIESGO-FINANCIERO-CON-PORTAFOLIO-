@@ -418,8 +418,8 @@ def call_api(endpoint, data=None, timeout=30):
             try:
                 return response.json()
             except ValueError as e:
-            st.error(f"Error decodificando respuesta JSON: {str(e)}")
-            return None
+                st.error(f"Error decodificando respuesta JSON: {str(e)}")
+                return None
         else:
             st.error(f"Error en API ({response.status_code}): {response.text[:200]}")
             return None
